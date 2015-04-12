@@ -28,6 +28,8 @@ trait UserDao {
    */
   def find(userID: UUID): Future[Option[User]]
 
+  def findByApiKey(apiKey: UUID): Option[User]
+
   /**
    * Saves a user.
    *

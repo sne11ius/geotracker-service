@@ -22,6 +22,8 @@ import models.daos._
 import models.daos.slick.UserDaoSlick
 import services.UserService
 import services.impl.UserServiceImpl
+import services.GeoCoordService
+import services.impl.GeoCoordServiceImpl
 import models.daos._
 import models.daos.slick._
 import net.codingwell.scalaguice.ScalaModule
@@ -34,7 +36,9 @@ class GeoTrackerServiceModule extends AbstractModule with ScalaModule {
 
   def configure() {
     bind[UserService].to[UserServiceImpl]
+    bind[GeoCoordService].to[GeoCoordServiceImpl]
     bind[UserDao].to[UserDaoSlick]
+    bind[GeoCoordDao].to[GeoCoordDaoSlick]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDaoSlick]
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]

@@ -51,6 +51,27 @@ class UserDaoSlick extends UserDao {
     }
   }
 
+  def findByApiKey(apiKey: UUID): Option[User] = {
+    DB withSession { implicit session =>
+      slickUsers.filter(_.apiKey === apiKey.toString()).firstOption match {
+        case Some(user) =>
+          slickUserLoginInfos.filter(_.userID === user.userID).firstOption match {
+            case Some(userLoginInfo) => {
+              slickLoginInfos.filter(_.id === userLoginInfo.loginInfoId).firstOption match {
+                case Some(dbLoginInfo) => {
+                  val loginInfo = LoginInfo(dbLoginInfo.providerID, dbLoginInfo.providerKey)
+                	Some(User(UUID.fromString(user.userID), UUID.fromString(user.apiKey), loginInfo, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL))
+                }
+                case None => None
+              }
+            }
+            case None => None
+          }
+        case None => None
+      }
+    }
+  }
+
   def save(user: User): Future[User] = {
     DB withSession { implicit session =>
       Future.successful {
