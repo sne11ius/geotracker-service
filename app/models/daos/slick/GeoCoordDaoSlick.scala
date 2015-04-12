@@ -58,22 +58,25 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
     }
   }
 
-  def loadLatest(apiKey: UUID): GeoCoord = {
+  def loadLatest(apiKey: UUID): Option[GeoCoord] = {
     DB withSession { implicit session =>
       userDao.findByApiKey(apiKey) match {
         case Some(user) => {
-          slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).take(1).list.map { c =>
-            GeoCoord(
-              c.id,
-              user.userID,
-              c.latitude,
-              c.longitude,
-              c.altitude,
-              c.accuracy,
-              c.speed,
-              new DateTime(c.time)
-            )
-          }.head
+          slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).firstOption match {
+            case Some(c) => {
+              Some(GeoCoord(
+                c.id,
+                user.userID,
+                c.latitude,
+                c.longitude,
+                c.altitude,
+                c.accuracy,
+                c.speed,
+                new DateTime(c.time)
+              ))
+            }
+            case None => None
+          }
         }
         case None => {
           throw new NotFoundException
