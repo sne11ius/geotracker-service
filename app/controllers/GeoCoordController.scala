@@ -19,11 +19,6 @@ import java.util.UUID
 import play.api.libs.json._
 import play.api.libs.json.Json
 
-/**
- * The basic application controller.
- *
- * @param env The Silhouette environment.
- */
 class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extends Controller {
 
   def postCoords = Action { implicit request =>
