@@ -1,0 +1,10 @@
+GET    /                          @controllers.ApplicationController.index
+
+GET    /signIn                    @controllers.ApplicationController.signIn
+GET    /signUp                    @controllers.ApplicationController.signUp
+GET    /signOut                   @controllers.ApplicationController.signOut
+POST   /authenticate/credentials  @controllers.CredentialsAuthController.authenticate
+POST   /signUp                    @controllers.SignUpController.signUp
+
+GET    /assets/*file              controllers.Assets.at(path="/public", file)
+GET    /webjars/*file             controllers.WebJarAssets.at(file)
