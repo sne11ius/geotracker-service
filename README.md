@@ -2,6 +2,10 @@
 
 A service to store and display geo coordinates
 
+## Example
+
+This service is running @ [https://wasis.nu/mit/geotracker-service](https://wasis.nu/mit/geotracker-service)
+
 ## Client
 
 See [Android GeoTracker](https://github.com/sne11ius/GeoTracker)
