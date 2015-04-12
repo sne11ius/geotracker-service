@@ -73,7 +73,10 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
       Logger.debug("No api key")
       Unauthorized
     } else {
-      Ok(Json.toJson(geoCoordService.loadLatest(UUID.fromString(apiKey))))
+      val coord = geoCoordService.loadLatest(UUID.fromString(apiKey))
+      Logger.debug(s"Api key: $apiKey")
+      Logger.debug(s"Latest: $coord")
+      Ok(Json.toJson(coord))
     }
   }
 
