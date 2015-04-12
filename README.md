@@ -16,7 +16,7 @@ See [Android GeoTracker](https://github.com/sne11ius/GeoTracker)
 
 ## Urls
 
-You can `POST` coordinates to `/coordinates` if you provide an api key. 
+You can `POST` coordinates to `/coordinates` if you provide an api key.
 
 ## License
 
