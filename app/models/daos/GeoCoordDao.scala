@@ -13,4 +13,6 @@ trait GeoCoordDao {
 
   def load(user: User): List[GeoCoord]
 
+  def loadLatest(apiKey: UUID): GeoCoord
+  
 }

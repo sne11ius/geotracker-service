@@ -1,6 +1,7 @@
 GET    /                          @controllers.ApplicationController.index
 
 POST   /coordinates               @controllers.GeoCoordController.postCoords
+POST   /coordinates/latest        @controllers.GeoCoordController.loadLatest
 
 GET    /signIn                    @controllers.ApplicationController.signIn
 GET    /signUp                    @controllers.ApplicationController.signUp

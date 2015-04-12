@@ -20,4 +20,8 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     geoCoordDao.load(user)
   }
 
+  def loadLatest(apiKey: UUID): GeoCoord = {
+    geoCoordDao.loadLatest(apiKey)
+  }
+
 }

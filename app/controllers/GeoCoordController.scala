@@ -16,6 +16,9 @@ import org.joda.time.DateTime
 import models.GeoCoord
 import java.util.UUID
 
+import play.api.libs.json._
+import play.api.libs.json.Json
+
 /**
  * The basic application controller.
  *
@@ -24,8 +27,6 @@ import java.util.UUID
 class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extends Controller {
 
   def postCoords = Action { implicit request =>
-    //Logger.debug("Data:")
-    //Logger.debug(request.body.asFormUrlEncoded.get.toString)
     val apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } )
     if ("" == apiKey) {
       Logger.debug("No api key")
@@ -37,13 +38,6 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
       val accuracy = Form("accuracy" -> text).bindFromRequest.get.toFloat
       val speed = Form("speed" -> text).bindFromRequest.get.toFloat
       val time = new DateTime(Form("time" -> text).bindFromRequest.get.toLong)
-      //Logger.debug(s"Api key: ${apiKey}")
-      //Logger.debug(s"Latitude: ${latitude}")
-      //Logger.debug(s"Longitude: ${longitude}")
-      //Logger.debug(s"Altitude: ${altitude}")
-      //Logger.debug(s"Accuracy: ${accuracy}")
-      //Logger.debug(s"Speed: ${speed}")
-      //Logger.debug(s"Time: ${time}")
       val geoCoord = GeoCoord(
           None,
           UUID.randomUUID(),
@@ -56,6 +50,29 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
       )
       geoCoordService.save(geoCoord, UUID.fromString(apiKey))
       Ok
+    }
+  }
+
+  implicit val coordWrites = new Writes[GeoCoord] {
+    def writes(c: GeoCoord): JsValue = {
+      Json.obj(
+        "latitude" -> c.latitude,
+        "longitude" -> c.longitude,
+        "altitude" -> c.altitude,
+        "speed" -> c.speed,
+        "accuracy" -> c.accuracy,
+        "time" -> c.time.getMillis
+      )
+    }
+  }
+
+  def loadLatest = Action { implicit request =>
+    val apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } )
+    if ("" == apiKey) {
+      Logger.debug("No api key")
+      Unauthorized
+    } else {
+      Ok(Json.toJson(geoCoordService.loadLatest(UUID.fromString(apiKey))))
     }
   }
 
