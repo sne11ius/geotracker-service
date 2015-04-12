@@ -1,34 +1,56 @@
-@(user: models.User, coords: List[GeoCoord])
+@(user: models.User, coords: List[GeoCoord], latest: GeoCoord)
 
 @main("Geotracker Service - Home", Some(user)) {
     <div class="user col-md-6 col-md-offset-3">
-        <div class="row">
+        <!--div class="row">
             <hr class="col-md-12" />
             <h4 class="col-md-8">Welcome, you are now signed in!</h4>
             <div class="col-md-4 text-right">
                 <img src="@user.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" style="height:40px;" />
             </div>
             <hr class="col-md-12" />
-        </div>
+        </div-->
         <div class="row data">
             <div class="col-md-12">
-                <div class="row">
-                    <p class="col-md-6"><strong>First name:</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
-                </div>
-                <div class="row">
-                    <p class="col-md-6"><strong>Last name:</strong></p><p class="col-md-6">@user.lastName.getOrElse("None")</p>
-                </div>
-                <div class="row">
-                    <p class="col-md-6"><strong>Full name:</strong></p><p class="col-md-6">@user.fullName.getOrElse("None")</p>
-                </div>
-                <div class="row">
-                    <p class="col-md-6"><strong>Email:</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
-                </div>
+                <!--
+                  <div class="row">
+                      <p class="col-md-6"><strong>First name:</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
+                  </div>
+                  <div class="row">
+                      <p class="col-md-6"><strong>Last name:</strong></p><p class="col-md-6">@user.lastName.getOrElse("None")</p>
+                  </div>
+                  <div class="row">
+                      <p class="col-md-6"><strong>Full name:</strong></p><p class="col-md-6">@user.fullName.getOrElse("None")</p>
+                  </div>
+                  <div class="row">
+                      <p class="col-md-6"><strong>Email:</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
+                  </div>
+                -->
                 <div class="row">
                     <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
                 </div>
             </div>
         </div>
+        <h4>You are here</h4>
+        <div id="map-canvas"></div>
+        <script src="https://maps.googleapis.com/maps/api/js"></script>
+        <script>
+          function initialize() {
+            var myLatlng = new google.maps.LatLng(@latest.latitude, @latest.longitude);
+            var mapOptions = {
+              zoom: 4,
+              center: myLatlng
+            }
+            var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+          
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: 'You are here'
+            });
+          }
+          google.maps.event.addDomListener(window, 'load', initialize);
+        </script>
         <div class="row">
             <h4 class="col-md-8">Your data</h4>
             <table class="coord-list">

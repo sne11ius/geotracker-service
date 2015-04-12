@@ -96,3 +96,7 @@ a {
 table.coord-list th, table.coord-list td {
 	width: 10%;
 }
+#map-canvas {
+  width: 500px;
+  height: 400px;
+}

@@ -27,7 +27,7 @@ import play.api.libs.json.Json
 class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extends Controller {
 
   def postCoords = Action { implicit request =>
-    val apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } )
+    val apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } ).trim
     if ("" == apiKey) {
       Logger.debug("No api key")
       Unauthorized
@@ -38,6 +38,7 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
       val accuracy = Form("accuracy" -> text).bindFromRequest.get.toFloat
       val speed = Form("speed" -> text).bindFromRequest.get.toFloat
       val time = new DateTime(Form("time" -> text).bindFromRequest.get.toLong)
+      Logger.debug(s"Api key: '$apiKey'.")
       val geoCoord = GeoCoord(
           None,
           UUID.randomUUID(),
