@@ -11,4 +11,6 @@ trait GeoCoordDao {
 
   def save(geoCoord: GeoCoord, apiKey: UUID): GeoCoord
 
+  def load(user: User): List[GeoCoord]
+
 }

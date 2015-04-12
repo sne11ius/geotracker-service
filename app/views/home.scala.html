@@ -1,4 +1,4 @@
-@(user: models.User)
+@(user: models.User, coords: List[GeoCoord])
 
 @main("Geotracker Service - Home", Some(user)) {
     <div class="user col-md-6 col-md-offset-3">
@@ -28,6 +28,29 @@
                     <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
                 </div>
             </div>
+        </div>
+        <div class="row">
+            <h4 class="col-md-8">Your data</h4>
+            <table class="coord-list">
+                <tr>
+                    <th>lat</th>
+                    <th>long</th>
+                    <th>alt</th>
+                    <th>acc</th>
+                    <th>speed</th>
+                    <th>time</th>
+                </tr>
+                @for(coord <- coords) {
+                    <tr>
+                        <td>@coord.latitude</td>
+                        <td>@coord.longitude</td>
+                        <td>@coord.altitude</td>
+                        <td>@coord.accuracy</td>
+                        <td>@coord.speed</td>
+                        <td>@coord.time</td>
+                    </tr>
+                }
+            </table>
         </div>
     </div>
 }

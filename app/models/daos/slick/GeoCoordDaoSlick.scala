@@ -2,20 +2,17 @@ package models.daos.slick
 
 import java.util.UUID
 import models.daos.UserDao
-import com.mohiva.play.silhouette.api.LoginInfo
 import models.User
 import play.api.Play.current
-import scala.concurrent.Future
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
-import models.daos.PasswordInfoDao
 import play.api.Logger
 import javax.inject.Inject
-
 import models.GeoCoord
 import models.daos.GeoCoordDao
 import models.daos.slick.GeoCoordSlickDB.DBGeoCoord
 import exceptions.NotFoundException
+import org.joda.time.DateTime
 
 class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
 
@@ -40,6 +37,23 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
         case None => {
           throw new NotFoundException
         }
+      }
+    }
+  }
+
+  def load(user: User): List[GeoCoord] = {
+    DB withSession { implicit session =>
+      slickGeoCoords.filter(_.userId === user.userID.toString).list.map { c =>
+        GeoCoord(
+          c.id,
+          user.userID,
+          c.latitude,
+          c.longitude,
+          c.altitude,
+          c.accuracy,
+          c.speed,
+          new DateTime(c.time)
+        )
       }
     }
   }

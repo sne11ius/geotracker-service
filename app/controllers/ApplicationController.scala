@@ -1,20 +1,19 @@
 package controllers
 
 import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import forms._
 import models.User
-
 import scala.concurrent.Future
+import services.GeoCoordService
 
 /**
  * The basic application controller.
  *
  * @param env The Silhouette environment.
  */
-class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
+class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator], geoCoordService: GeoCoordService)
   extends Silhouette[User, SessionAuthenticator] {
 
   /**
@@ -23,7 +22,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
    * @return The result to display.
    */
   def index = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.home(request.identity)))
+    val coords = geoCoordService.load(request.identity)
+    Future.successful(Ok(views.html.home(request.identity, coords)))
   }
 
   /**

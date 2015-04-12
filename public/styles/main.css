@@ -92,3 +92,7 @@ a {
 .btn-lg {
     font-size: 18px;
 }
+
+table.coord-list th, table.coord-list td {
+	width: 10%;
+}
