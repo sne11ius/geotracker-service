@@ -1,6 +1,6 @@
 @(user: models.User)
 
-@main("Silhouette - Home", Some(user)) {
+@main("Geotracker Service - Home", Some(user)) {
     <div class="user col-md-6 col-md-offset-3">
         <div class="row">
             <hr class="col-md-12" />
@@ -23,6 +23,9 @@
                 </div>
                 <div class="row">
                     <p class="col-md-6"><strong>Email:</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
+                </div>
+                <div class="row">
+                    <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
                 </div>
             </div>
         </div>

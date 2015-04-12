@@ -34,7 +34,7 @@ class UserDaoSlick extends UserDao {
               case Some(userLoginInfo) =>
                 slickUsers.filter(_.id === userLoginInfo.userID).firstOption match {
                   case Some(user) =>
-                    Some(User(UUID.fromString(user.userID), loginInfo, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL))
+                    Some(User(UUID.fromString(user.userID), UUID.fromString(user.apiKey), loginInfo, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL))
                   case None => None
                 }
               case None => None
@@ -54,7 +54,7 @@ class UserDaoSlick extends UserDao {
   def save(user: User): Future[User] = {
     DB withSession { implicit session =>
       Future.successful {
-        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL)
+        val dbUser = DBUser(user.userID.toString, user.apiKey.toString, user.firstName, user.lastName, user.fullName, user.email, user.avatarURL)
         slickUsers.filter(_.id === dbUser.userID).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
           case None => slickUsers.insert(dbUser)
