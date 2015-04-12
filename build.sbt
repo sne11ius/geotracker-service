@@ -1,4 +1,4 @@
-name := """archetypes"""
+name := """geotracker-service"""
 
 version := "1.0-SNAPSHOT"
 
