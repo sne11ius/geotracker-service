@@ -12,20 +12,6 @@
         </div-->
         <div class="row data">
             <div class="col-md-12">
-                <!--
-                  <div class="row">
-                      <p class="col-md-6"><strong>First name:</strong></p><p class="col-md-6">@user.firstName.getOrElse("None")</p>
-                  </div>
-                  <div class="row">
-                      <p class="col-md-6"><strong>Last name:</strong></p><p class="col-md-6">@user.lastName.getOrElse("None")</p>
-                  </div>
-                  <div class="row">
-                      <p class="col-md-6"><strong>Full name:</strong></p><p class="col-md-6">@user.fullName.getOrElse("None")</p>
-                  </div>
-                  <div class="row">
-                      <p class="col-md-6"><strong>Email:</strong></p><p class="col-md-6">@user.email.getOrElse("None")</p>
-                  </div>
-                -->
                 <div class="row">
                     <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
                 </div>
@@ -46,6 +32,19 @@
               }
               var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
             
+              var locations = [
+                @for(coord <- coords) {
+                  new google.maps.LatLng(@coord.latitude, @coord.longitude), 
+                }
+              ];
+              var path = new google.maps.Polyline({
+                path: locations,
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+              });
+              path.setMap(map);
               var marker = new google.maps.Marker({
                   position: myLatlng,
                   map: map,
