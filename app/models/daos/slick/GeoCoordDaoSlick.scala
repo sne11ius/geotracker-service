@@ -43,7 +43,7 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
 
   def load(user: User): List[GeoCoord] = {
     DB withSession { implicit session =>
-      slickGeoCoords.filter(_.userId === user.userID.toString).list.map { c =>
+      slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).list.map { c =>
         GeoCoord(
           c.id,
           user.userID,
