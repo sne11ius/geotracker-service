@@ -62,7 +62,10 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
                           Ok
                         } catch {
                           // apiKey might not be a uuid
-                          case e: IllegalArgumentException => BadRequest
+                          case e: IllegalArgumentException => {
+                            Logger.debug(s"Malformed api key: $apiKey")
+                            BadRequest
+                          }
                         }
                       }
                       case _ => {
