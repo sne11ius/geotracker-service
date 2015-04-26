@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.1.1",
   "org.webjars" % "jquery" % "1.11.0",
   "net.codingwell" %% "scala-guice" % "4.0.0-beta5",
+  "io.argonaut" %% "argonaut" % "6.0.4",
   jdbc,
   cache,
   filters
