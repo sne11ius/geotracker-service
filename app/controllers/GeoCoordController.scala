@@ -80,7 +80,10 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
                   }
                 }
               }
-              case _ => Unauthorized
+              case _ => {
+                Logger.debug("No Api-Key header found")
+                Unauthorized
+              }
             }
           }
           case _ => {
