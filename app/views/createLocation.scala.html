@@ -1,0 +1,63 @@
+@(user: User, createLocationForm: Form[forms.CreateLocationForm.Data])(implicit request: RequestHeader)
+
+@import views.html.bootstrap._
+
+@main("Geotracker Service - Create location", Some(user)) {
+  @request.flash.get("error").map { msg =>
+    <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
+      <a href="#" class="close" data-dismiss="alert">&times;</a>
+      <strong>Error!</strong> @msg
+    </div>
+  }
+  <fieldset class="col-md-6 col-md-offset-3">
+    <legend>Create location</legend>
+    @helper.form(action = routes.NamedLocationsController.createLocation()) {
+      @text(createLocationForm("name"), "My awesome new location")
+      <input type="hidden" name="latitude" id="latitude">
+      <input type="hidden" name="longitude" id="longitude">
+      <input type="hidden" name="radius" id="radius">
+      <div id="map-canvas" style="width: 100%;"></div>
+      <div class="form-group">
+        <div>
+          <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+        </div>
+      </div>
+    }
+    <script>
+      docReady(function() {
+        function showMap(location) {
+          new Maplace({
+            locations: [{
+              lat: location.coords.latitude,
+              lon: location.coords.longitude,
+              title: 'Center of your now location',
+              show_infowindow: false,
+              circle_options: {
+                radius: 2000,
+                editable: true
+              },
+              draggable: true
+            }],
+            map_div: '#map-canvas',
+            type: 'circle',
+            shared: {
+                zoom: 12,
+                html: '%index'
+            },
+            circleRadiusChanged: function(index, point, marker) {
+              $('#radius').val(marker.getRadius());
+            },
+            dragEnd: function (index, location, marker) {
+              $('#latitude').val(marker.getPosition().lat());
+              $('#longitude').val(marker.getPosition().lng());
+            }
+          }).Load();
+        }
+        function locationCallback(location) {
+          showMap(location);
+        }
+        navigator.geolocation.getCurrentPosition(locationCallback);
+      });
+    </script>
+  </fieldset>
+}

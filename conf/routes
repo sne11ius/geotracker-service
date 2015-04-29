@@ -3,6 +3,9 @@ GET    /                          @controllers.ApplicationController.index
 POST   /coordinates               @controllers.GeoCoordController.postCoords
 POST   /coordinates/latest        @controllers.GeoCoordController.loadLatest
 
+GET    /locations                 @controllers.NamedLocationsController.listLocations
+GET    /locations/create          @controllers.NamedLocationsController.createLocation
+
 GET    /signIn                    @controllers.ApplicationController.signIn
 GET    /signUp                    @controllers.ApplicationController.signUp
 GET    /signOut                   @controllers.ApplicationController.signOut

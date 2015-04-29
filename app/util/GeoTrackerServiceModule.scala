@@ -29,16 +29,19 @@ import models.daos.slick._
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Play
 import play.api.Play.current
-
 import scala.collection.immutable.ListMap
+import services.NamedLocationService
+import services.impl.NamedLocationServiceImpl
 
 class GeoTrackerServiceModule extends AbstractModule with ScalaModule {
 
   def configure() {
     bind[UserService].to[UserServiceImpl]
     bind[GeoCoordService].to[GeoCoordServiceImpl]
+    bind[NamedLocationService].to[NamedLocationServiceImpl]
     bind[UserDao].to[UserDaoSlick]
     bind[GeoCoordDao].to[GeoCoordDaoSlick]
+    bind[NamedLocationDao].to[NamedLocationDaoSlick]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDaoSlick]
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]

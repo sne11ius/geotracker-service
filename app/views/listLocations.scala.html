@@ -1,0 +1,16 @@
+@(user: models.User, locations: List[NamedLocation])
+
+@main("Geotracker Service - Locations", Some(user)) {
+    <div class="col-md-12">
+      <div class="row">
+        <a class="pull-right btn btn-primary" href="@routes.NamedLocationsController.createLocation"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create new location</a>
+      </div>
+      <div class="row">
+        @if(locations.isEmpty) {
+          No locations yet.
+        } else {
+          Your locations:
+        }
+      </div>
+  </div>
+}
