@@ -35,7 +35,10 @@
                 <nav class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
                         <!-- li><a href="@routes.ApplicationController.index">Home</a></li-->
-                        <li><a href="@routes.NamedLocationsController.listLocations">Named Locations</a></li>
+                        @user.map { u =>
+                          <li><a href="@routes.NamedLocationsController.listLocations">Named Locations</a></li>
+                        }.getOrElse {
+                        }
                         <li><a href="https://github.com/sne11ius/geotracker-service">GitHub</a></li>
                         <li><a href="https://wasis.nu/mit/blog">Blog</a></li>
                     </ul>

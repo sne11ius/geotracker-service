@@ -11,7 +11,7 @@
   }
   <fieldset class="col-md-6 col-md-offset-3">
     <legend>Create location</legend>
-    @helper.form(action = routes.NamedLocationsController.createLocation()) {
+    @helper.form(action = routes.NamedLocationsController.created) {
       @text(createLocationForm("name"), "My awesome new location")
       <input type="hidden" name="latitude" id="latitude">
       <input type="hidden" name="longitude" id="longitude">
@@ -41,8 +41,8 @@
             map_div: '#map-canvas',
             type: 'circle',
             shared: {
-                zoom: 12,
-                html: '%index'
+              zoom: 12,
+              html: '%index'
             },
             circleRadiusChanged: function(index, point, marker) {
               $('#radius').val(marker.getRadius());

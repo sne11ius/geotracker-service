@@ -1,0 +1,28 @@
+@(user: models.User, location: NamedLocation)
+
+@main("Geotracker Service - Location details", Some(user)) {
+  <div class="col-md-12">
+    <div class="row">
+      <!-- a class="pull-right btn btn-primary" href="@routes.NamedLocationsController.create"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create</a-->
+    </div>
+    <div class="row">
+      <style>
+        div.map {
+          with: 500px;
+          height: 350px;
+        }
+      </style>
+<pre>{
+  name:   @location.name
+  lat:    @location.latitude
+  long:   @location.longitude
+  radius: @location.radius
+}</pre>
+      <script>
+        docReady(function() {
+          console.log('no details yet');
+        });
+      </script>
+    </div>
+  </div>
+}
