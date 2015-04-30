@@ -50,16 +50,14 @@
   radius: @location.radius
 }</pre>
       Matches:
-<pre>[
-@for(c <- matchedCoords) {{
+<pre>[@for(c <- matchedCoords) {{
   lat: @c.latitude,
   long: @c.longitude,
   alt: @c.altitude,
   acc: @c.accuracy,
   spd: @c.speed,
   ts: @c.time.getMillis
-}
-}]</pre>
+},}]</pre>
     </div>
   </div>
   
