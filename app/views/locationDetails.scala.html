@@ -51,6 +51,11 @@
   long:   @location.longitude
   radius: @location.radius
 }</pre>
+      Intervals:
+<pre>[@for(i <- intervals) {{
+  start: @formatDate(i.getStart),
+  end: @formatDate(i.getEnd)
+},}]</pre>
       Matches:
 <pre>[@for(c <- matchedCoords) {{
   lat: @c.latitude,
@@ -59,11 +64,6 @@
   acc: @c.accuracy,
   spd: @c.speed,
   ts: @c.time.getMillis
-},}]</pre>
-      Intervals:
-<pre>[@for(i <- intervals) {{
-  start: @formatDate(i.getStart),
-  end: @formatDate(i.getEnd)
 },}]</pre>
     </div>
   </div>
