@@ -3,6 +3,7 @@ package models.daos.slick
 import java.util.UUID
 import models.daos.UserDao
 import models.User
+import models.NamedLocation
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
@@ -13,6 +14,8 @@ import models.daos.GeoCoordDao
 import models.daos.slick.GeoCoordSlickDB.DBGeoCoord
 import exceptions.NotFoundException
 import org.joda.time.DateTime
+import org.joda.time.Interval
+import models.GeoCoord
 
 class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
 
@@ -80,6 +83,45 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
         }
         case None => {
           throw new NotFoundException
+        }
+      }
+    }
+  }
+
+  // http://stackoverflow.com/questions/120283/how-can-i-measure-distance-and-create-a-bounding-box-based-on-two-latitudelongi
+  def dist(location: NamedLocation, coord: GeoCoord): Double = {
+    val earthRadius = 6371.0
+    val diffBetweenLatitudeRadians = Math.toRadians(coord.latitude - location.latitude)
+    val diffBetweenLongitudeRadians = Math.toRadians(coord.longitude - location.longitude)
+    val latitudeOneInRadians = Math.toRadians(location.latitude)
+    val latitudeTwoInRadians = Math.toRadians(coord.latitude)
+    val a = Math.sin(diffBetweenLatitudeRadians / 2) * Math.sin(diffBetweenLatitudeRadians / 2) + Math.cos(latitudeOneInRadians) * Math.cos(latitudeTwoInRadians) * Math.sin(diffBetweenLongitudeRadians / 2) * Math.sin(diffBetweenLongitudeRadians / 2)
+    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    earthRadius * c
+  }
+
+  override def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord] = {
+    DB withSession { implicit session =>
+      val begin = interval.getStart.getMillis
+      val end = interval.getEnd.getMillis
+      val userId = user.userID.toString
+      val coordsInInterval = slickGeoCoords.filter(
+          c => c.userId === userId && c.time >= begin && c.time < end
+      ).list.map { c =>
+        GeoCoord(
+          c.id,
+          user.userID,
+          c.latitude,
+          c.longitude,
+          c.altitude,
+          c.accuracy,
+          c.speed,
+          new DateTime(c.time)
+        )
+      }
+      coordsInInterval.filter{
+        c => {
+          dist(location, c) < location.radius
         }
       }
     }

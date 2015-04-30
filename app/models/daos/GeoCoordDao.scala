@@ -6,6 +6,8 @@ import models.User
 import scala.concurrent.Future
 import models.GeoCoord
 import models.GeoCoord
+import models.NamedLocation
+import org.joda.time.Interval
 
 trait GeoCoordDao {
 
@@ -14,5 +16,7 @@ trait GeoCoordDao {
   def load(user: User): List[GeoCoord]
 
   def loadLatest(apiKey: UUID): Option[GeoCoord]
+
+  def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord]
 
 }

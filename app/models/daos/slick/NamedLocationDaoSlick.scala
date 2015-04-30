@@ -1,6 +1,7 @@
 package models.daos.slick
 
 import models.User
+import models.GeoCoord
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
@@ -9,10 +10,12 @@ import javax.inject.Inject
 import models.daos.NamedLocationDao
 import models.NamedLocation
 import models.daos.slick.NamedLocationSlickDB.DBNamedLocation
+import org.joda.time.Interval
 
 class NamedLocationDaoSlick @Inject() () extends NamedLocationDao {
 
   val slickNamedLocations = NamedLocationSlickDB.slickNamedLocations
+  val slickGeoCoords = GeoCoordSlickDB.slickGeoCoords
 
   override def addLocation(l: NamedLocation, user: User) = {
     DB withSession { implicit session =>

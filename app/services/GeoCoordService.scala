@@ -3,6 +3,8 @@ package services
 import models.GeoCoord
 import java.util.UUID
 import models.User
+import models.NamedLocation
+import org.joda.time.Interval
 
 trait GeoCoordService {
 
@@ -13,5 +15,7 @@ trait GeoCoordService {
   def load(user: User): List[GeoCoord]
 
   def loadLatest(apiKey: UUID): Option[GeoCoord]
+
+  def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord]
 
 }

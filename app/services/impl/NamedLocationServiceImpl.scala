@@ -5,6 +5,8 @@ import services.NamedLocationService
 import models.User
 import models.NamedLocation
 import models.daos.NamedLocationDao
+import org.joda.time.Interval
+import models.GeoCoord
 
 class NamedLocationServiceImpl @Inject() (namedLocationDao: NamedLocationDao) extends NamedLocationService {
 
@@ -16,7 +18,7 @@ class NamedLocationServiceImpl @Inject() (namedLocationDao: NamedLocationDao) ex
     namedLocationDao.loadLocations(user)
   }
 
-  def find(user: User, locationId: Long): Option[NamedLocation] = {
+  override def find(user: User, locationId: Long): Option[NamedLocation] = {
     namedLocationDao.find(user, locationId)
   }
 

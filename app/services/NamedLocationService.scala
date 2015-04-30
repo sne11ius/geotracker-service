@@ -5,6 +5,8 @@ import models.User
 import models.NamedLocation
 import models.NamedLocation
 import models.User
+import org.joda.time.Interval
+import models.GeoCoord
 
 trait NamedLocationService {
 

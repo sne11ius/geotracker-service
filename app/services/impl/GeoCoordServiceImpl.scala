@@ -9,6 +9,8 @@ import models.daos.GeoCoordDao
 import services.GeoCoordService
 import java.util.UUID
 import models.User
+import models.NamedLocation
+import org.joda.time.Interval
 
 class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordService {
 
@@ -26,6 +28,10 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
 
   def loadLatest(apiKey: UUID): Option[GeoCoord] = {
     geoCoordDao.loadLatest(apiKey)
+  }
+
+  override def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord] = {
+    geoCoordDao.findMatchingCoordinates(user, location, interval)
   }
 
 }
