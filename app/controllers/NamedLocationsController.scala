@@ -25,7 +25,8 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
       case None => Future.successful(Forbidden)
       case Some(l) => {
         val coords = geoCoordService.findMatchingCoordinates(request.identity, l, new Interval(0, Long.MaxValue))
-        Future.successful(Ok(views.html.locationDetails(request.identity, l, coords)))
+        val intervals = geoCoordService.findMatchingIntervals(request.identity, l, new Interval(0, Long.MaxValue))
+        Future.successful(Ok(views.html.locationDetails(request.identity, l, coords, intervals)))
       }
     }
   }

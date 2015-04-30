@@ -1,4 +1,6 @@
-@(user: models.User, location: NamedLocation, matchedCoords: List[GeoCoord])
+@import org.joda.time.Interval
+
+@(user: models.User, location: NamedLocation, matchedCoords: List[GeoCoord], intervals: List[Interval])
 
 @main("Geotracker Service - Location details", Some(user)) {
   <div role="tabpanel">
@@ -57,6 +59,11 @@
   acc: @c.accuracy,
   spd: @c.speed,
   ts: @c.time.getMillis
+},}]</pre>
+      Intervals:
+<pre>[@for(i <- intervals) {{
+  start: @formatDate(i.getStart),
+  end: @formatDate(i.getEnd)
 },}]</pre>
     </div>
   </div>

@@ -18,4 +18,6 @@ trait GeoCoordService {
 
   def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord]
 
+  def findMatchingIntervals(user: User, location: NamedLocation, interval: Interval): List[Interval]
+
 }
