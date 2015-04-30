@@ -107,7 +107,7 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
       val userId = user.userID.toString
       val coordsInInterval = slickGeoCoords.filter(
           c => c.userId === userId && c.time >= begin && c.time < end
-      ).list.map { c =>
+      ).sortBy(_.time.asc).list.map { c =>
         GeoCoord(
           c.id,
           user.userID,
