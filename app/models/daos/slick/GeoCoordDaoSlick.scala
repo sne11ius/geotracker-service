@@ -97,7 +97,7 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
     val latitudeTwoInRadians = Math.toRadians(coord.latitude)
     val a = Math.sin(diffBetweenLatitudeRadians / 2) * Math.sin(diffBetweenLatitudeRadians / 2) + Math.cos(latitudeOneInRadians) * Math.cos(latitudeTwoInRadians) * Math.sin(diffBetweenLongitudeRadians / 2) * Math.sin(diffBetweenLongitudeRadians / 2)
     val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-    (earthRadius * c) * 1000
+    earthRadius * c * 1000
   }
 
   override def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord] = {
