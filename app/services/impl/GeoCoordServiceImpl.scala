@@ -15,6 +15,7 @@ import play.api.Play.current
 import org.joda.time.DateTime
 import scala.collection.mutable.MutableList
 import org.joda.time.Duration
+import play.api.Logger
 
 class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordService {
 
@@ -44,7 +45,14 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     val oldMinutes = d.getMinuteOfHour
     val mod = oldMinutes % padding
     val newMinutes = if (mod > padding / 2) oldMinutes + (padding - mod) else oldMinutes - mod
-    d.withMinuteOfHour(newMinutes).withSecondOfMinute(0).withMillisOfSecond(0)
+    if (0 > newMinutes || 59 < newMinutes) {
+      Logger.warn(s"Problematic minutes: $newMinutes")
+    }
+    if (60 == newMinutes) {
+      d.plusHours(1).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+    } else {
+      d.withMinuteOfHour(newMinutes).withSecondOfMinute(0).withMillisOfSecond(0)
+    }
   }
 
   override def findMatchingIntervals(user: User, location: NamedLocation, interval: Interval): List[Interval] = {
