@@ -38,8 +38,9 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     geoCoordDao.findMatchingCoordinates(user, location, interval)
   }
 
-  def pad(d: DateTime, padding: Int): DateTime = {
+  def pad(d: DateTime): DateTime = {
     // if (num % padding > padding / 2) num + (padding - (num % padding)) else num - (num % padding)
+    val padding = current.configuration.getInt("calendarPadding").getOrElse(15)
     val oldMinutes = d.getMinuteOfHour
     val mod = oldMinutes % padding
     val newMinutes = if (mod > padding / 2) oldMinutes + (padding - mod) else oldMinutes - mod
@@ -47,7 +48,6 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
   }
 
   override def findMatchingIntervals(user: User, location: NamedLocation, interval: Interval): List[Interval] = {
-    val paddingMinutes = current.configuration.getInt("calendarPadding").getOrElse(15)
     val minExitMinutes = current.configuration.getInt("minExitMinutes").getOrElse(15)
 
     val coords = findMatchingCoordinates(user, location, interval)
@@ -58,9 +58,9 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     if (coords.isEmpty) {
       List()
     } else if (1 == coords.length) {
-      List(new Interval(pad(coords.head.time, paddingMinutes), pad(coords.head.time, paddingMinutes)))
+      List(new Interval(pad(coords.head.time), pad(coords.head.time)))
     } else if (2 == coords.length) {
-      List(new Interval(pad(coords.head.time, paddingMinutes), pad(coords.drop(1).head.time, paddingMinutes)))
+      List(new Interval(pad(coords.head.time), pad(coords.drop(1).head.time)))
     } else {
       var buckets = MutableList[MutableList[GeoCoord]]()
       var lastCoord = coords.head
@@ -79,7 +79,7 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
       buckets.map {
         l => l.sortBy { c => c.time.getMillis }
       }.map {
-        l => new Interval(pad(l.head.time, paddingMinutes), pad(l.last.time, paddingMinutes))
+        l => new Interval(pad(l.head.time), pad(l.last.time))
       }.toList
     }
   }
