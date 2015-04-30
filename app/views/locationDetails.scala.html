@@ -1,10 +1,78 @@
-@(user: models.User, location: NamedLocation)
+@(user: models.User, location: NamedLocation, matchedCoords: List[GeoCoord])
 
 @main("Geotracker Service - Location details", Some(user)) {
-  <div class="col-md-12">
-    <div class="row">
-      <!-- a class="pull-right btn btn-primary" href="@routes.NamedLocationsController.create"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Create</a-->
+  <div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#map" aria-controls="map" role="tab" data-toggle="tab">Map</a></li>
+      <li role="presentation"><a href="#calendar" aria-controls="calendar" role="tab" data-toggle="tab">Calendar</a></li>
+      <li role="presentation"><a href="#data" aria-controls="data" role="tab" data-toggle="tab">Data</a></li>
+    </ul>
+  </div>
+  
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="map">
+      <div class="map"></div>
+      <style>
+        div.map {
+          with: 500px;
+          height: 500px;
+        }
+      </style>
+      <script>
+        docReady(function() {
+          var locations = [
+            @for((l, index) <- matchedCoords.zipWithIndex) {
+               {
+                 lat: @l.latitude,
+                 lon: @l.longitude,
+                 show_infowindow: false
+               },
+             }
+          ];
+          new Maplace({
+            locations: locations,
+            map_div: $('div.map'),
+            shared: {
+              zoom: 12,
+              html: '%index'
+            },
+          }).Load();
+        });
+      </script>
     </div>
+    <div role="tabpanel" class="tab-pane" id="calendar">calendar</div>
+    <div role="tabpanel" class="tab-pane" id="data">
+      Location:
+<pre>{
+  name:   '@location.name'
+  lat:    @location.latitude
+  long:   @location.longitude
+  radius: @location.radius
+}</pre>
+      Matches:
+<pre>[
+@for(c <- matchedCoords) {{
+  lat: @c.latitude,
+  long: @c.longitude,
+  alt: @c.altitude,
+  acc: @c.accuracy,
+  spd: @c.speed,
+  ts: @c.time.getMillis
+}
+}]</pre>
+    </div>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!--
+  <div class="col-md-12">
     <div class="row">
       <style>
         div.map {
@@ -12,12 +80,6 @@
           height: 350px;
         }
       </style>
-<pre>{
-  name:   @location.name
-  lat:    @location.latitude
-  long:   @location.longitude
-  radius: @location.radius
-}</pre>
       <script>
         docReady(function() {
           console.log('no details yet');
@@ -25,4 +87,5 @@
       </script>
     </div>
   </div>
+   -->
 }

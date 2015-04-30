@@ -10,8 +10,10 @@ import models.User
 import forms.CreateLocationForm
 import play.api.Logger
 import models.NamedLocation
+import services.GeoCoordService
+import org.joda.time.Interval
 
-class NamedLocationsController @Inject() (implicit val env: Environment[User, SessionAuthenticator], val namedLocationsService: NamedLocationService) extends Silhouette[User, SessionAuthenticator] {
+class NamedLocationsController @Inject() (implicit val env: Environment[User, SessionAuthenticator], val namedLocationsService: NamedLocationService, geoCoordService: GeoCoordService) extends Silhouette[User, SessionAuthenticator] {
 
   def listLocations = SecuredAction.async { implicit request =>
     val locations = namedLocationsService.loadLocations(request.identity)
@@ -22,7 +24,8 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
     namedLocationsService.find(request.identity, locationId) match {
       case None => Future.successful(Forbidden)
       case Some(l) => {
-        Future.successful(Ok(views.html.locationDetails(request.identity, l)))
+        val coords = geoCoordService.findMatchingCoordinates(request.identity, l, new Interval(0, Long.MaxValue))
+        Future.successful(Ok(views.html.locationDetails(request.identity, l, coords)))
       }
     }
   }
