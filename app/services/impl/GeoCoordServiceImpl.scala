@@ -58,9 +58,9 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     if (coords.isEmpty) {
       List()
     } else if (1 == coords.length) {
-      List(new Interval(coords.head.time, coords.head.time))
-    } else if (1 == coords.length) {
-      List(new Interval(coords.head.time, coords.drop(1).head.time))
+      List(new Interval(pad(coords.head.time, paddingMinutes), pad(coords.head.time, paddingMinutes)))
+    } else if (2 == coords.length) {
+      List(new Interval(pad(coords.head.time, paddingMinutes), pad(coords.drop(1).head.time, paddingMinutes)))
     } else {
       var buckets = MutableList[MutableList[GeoCoord]]()
       var lastCoord = coords.head
@@ -68,7 +68,7 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
       currentList += lastCoord
       buckets += currentList
       for (c <- coords) {
-        val duration = new Duration(c.time, lastCoord.time)
+        val duration = new Duration(lastCoord.time, c.time)
         if (duration.getStandardMinutes > minExitMinutes) {
           currentList = MutableList[GeoCoord]()
           buckets += currentList
