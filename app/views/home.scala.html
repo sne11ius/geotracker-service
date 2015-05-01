@@ -22,9 +22,8 @@
           [No data yet]
         } else {
           <div id="map-canvas"></div>
-          <script src="https://maps.googleapis.com/maps/api/js"></script>
           <script>
-            function initialize() {
+            docReady(function() {
               var myLatlng = new google.maps.LatLng(@latest.get.latitude, @latest.get.longitude);
               var mapOptions = {
                 zoom: 6,
@@ -50,8 +49,7 @@
                   map: map,
                   title: 'You are here'
               });
-            }
-            google.maps.event.addDomListener(window, 'load', initialize);
+            });
           </script>
         }
         <div class="row">
