@@ -45,9 +45,6 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     val oldMinutes = d.getMinuteOfHour
     val mod = oldMinutes % padding
     val newMinutes = if (mod > padding / 2) oldMinutes + (padding - mod) else oldMinutes - mod
-    if (0 > newMinutes || 59 < newMinutes) {
-      Logger.warn(s"Problematic minutes: $newMinutes")
-    }
     if (60 == newMinutes) {
       d.plusHours(1).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
     } else {
