@@ -44,7 +44,15 @@
             },
           }).Load();
           $('#calendar').fullCalendar({
-            
+            header: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'month,agendaWeek,agendaDay'
+            },
+            events: [@for(i <- intervals) {{
+              start: '@i.getStart.toString("yyyy-MM-dd'T'HH:mm", java.util.Locale.US)',
+              end: '@i.getEnd.toString("yyyy-MM-dd'T'HH:mm", java.util.Locale.US)',
+            },}]
           });
           $('#calendar-tab').on('shown.bs.tab', function (e) {
             $('#calendar').fullCalendar('render');
