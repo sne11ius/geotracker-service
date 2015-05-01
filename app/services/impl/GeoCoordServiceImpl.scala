@@ -63,6 +63,7 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     // 1. Put coords in a List[List[GeoCoord]] according to the respective times and minExitMinutes
     // 2. Make this a List[Interval]
     // 3. Pad the intervals
+    // 4. Remove zero-length intervals
     if (coords.isEmpty) {
       List()
     } else if (1 == coords.length) {
@@ -85,9 +86,11 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
         lastCoord = c
       }
       buckets.map {
-        l => l.sortBy { c => c.time.getMillis }
+        _.sortBy { _.time.getMillis }
       }.map {
         l => new Interval(pad(l.head.time), pad(l.last.time))
+      }.filter {
+        0 < _.toDurationMillis
       }.toList
     }
   }
