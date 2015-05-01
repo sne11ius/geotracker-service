@@ -56,8 +56,6 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
   }
 
   override def findMatchingIntervals(user: User, location: NamedLocation, interval: Interval): List[Interval] = {
-    val minExitMinutes = current.configuration.getInt("minExitMinutes").getOrElse(15)
-
     val coords = findMatchingCoordinates(user, location, interval)
     // TODO
     // 1. Put coords in a List[List[GeoCoord]] according to the respective times and minExitMinutes
@@ -71,21 +69,7 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     } else if (2 == coords.length) {
       List(new Interval(pad(coords.head.time), pad(coords.drop(1).head.time)))
     } else {
-      var buckets = MutableList[MutableList[GeoCoord]]()
-      var lastCoord = coords.head
-      var currentList = MutableList[GeoCoord]()
-      currentList += lastCoord
-      buckets += currentList
-      for (c <- coords) {
-        val duration = new Duration(lastCoord.time, c.time)
-        if (duration.getStandardMinutes > minExitMinutes) {
-          currentList = MutableList[GeoCoord]()
-          buckets += currentList
-        }
-      	currentList += c
-        lastCoord = c
-      }
-      buckets.map {
+      toBuckets(coords).map {
         _.sortBy { _.time.getMillis }
       }.map {
         l => new Interval(pad(l.head.time), pad(l.last.time))
@@ -93,5 +77,24 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
         0 < _.toDurationMillis
       }.toList
     }
+  }
+
+  def toBuckets(coords: List[GeoCoord]): MutableList[MutableList[GeoCoord]] = {
+    val minExitMinutes = current.configuration.getInt("minExitMinutes").getOrElse(15)
+    var buckets = MutableList[MutableList[GeoCoord]]()
+    var lastCoord = coords.head
+    var currentList = MutableList[GeoCoord]()
+    currentList += lastCoord
+    buckets += currentList
+    for (c <- coords) {
+      val duration = new Duration(lastCoord.time, c.time)
+      if (duration.getStandardMinutes > minExitMinutes) {
+        currentList = MutableList[GeoCoord]()
+        buckets += currentList
+      }
+      currentList += c
+      lastCoord = c
+    }
+    buckets
   }
 }
