@@ -1,4 +1,4 @@
-# Geo tracker serivce
+# Geo tracker service
 
 A service to store and display geo coordinates
 
