@@ -1,3 +1,5 @@
+[![Build Status](http://wasis.nu:8090/buildStatus/icon?job=geotracker-service dist)](http://wasis.nu:8090/job/geotracker-service%20dist/)
+
 # Geo tracker service
 
 A service to store and display geo coordinates
