@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "1.11.0",
   "net.codingwell" %% "scala-guice" % "4.0.0-beta5",
   "io.argonaut" %% "argonaut" % "6.0.4",
+  "com.jcabi" % "jcabi-manifests" % "1.1",
   jdbc,
   cache,
   filters

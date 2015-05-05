@@ -1,4 +1,5 @@
 GET    /                                  @controllers.ApplicationController.index
+GET    /about                             @controllers.ApplicationController.about
 
 POST   /coordinates                       @controllers.GeoCoordController.postCoords
 POST   /coordinates/latest                @controllers.GeoCoordController.loadLatest

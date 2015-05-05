@@ -40,8 +40,6 @@
                   <li><a href="@routes.NamedLocationsController.listLocations">Named Locations</a></li>
                 }.getOrElse {
                 }
-                <li><a href="https://github.com/sne11ius/geotracker-service">GitHub</a></li>
-                <li><a href="https://wasis.nu/mit/blog">Blog</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 @user.map { u =>
@@ -55,6 +53,7 @@
           </nav>
       </div>
     </header>
+    <a class="about-link" href="@routes.ApplicationController.about"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></a>
     <main class="container">
       <div class="starter-template row">
         @content

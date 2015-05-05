@@ -7,6 +7,10 @@ import forms._
 import models.User
 import scala.concurrent.Future
 import services.GeoCoordService
+import play.api.mvc.Action
+import com.jcabi.manifests.Manifests
+
+import models.ManifestInfo
 
 /**
  * The basic application controller.
@@ -25,6 +29,20 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     val coords = geoCoordService.load(request.identity)
     val latest = geoCoordService.loadLatest(request.identity.apiKey)
     Future.successful(Ok(views.html.home(request.identity, coords, latest)))
+  }
+
+  def about = UserAwareAction { implicit request =>
+    var manifestInfo = ManifestInfo("branch", "date", "rev")
+    try {
+      manifestInfo = ManifestInfo(
+        Manifests.read("Git-Branch"),
+        Manifests.read("Git-Build-Date"),
+        Manifests.read("Git-Head-Rev")
+      )
+    } catch {
+      case e: Exception => {}
+    }
+    Ok(views.html.about(manifestInfo, request.identity))
   }
 
   /**
