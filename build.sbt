@@ -1,3 +1,7 @@
+import com.atlassian.labs.gitstamp.GitStampPlugin._
+
+Seq( gitStampSettings: _* )
+
 name := """geotracker-service"""
 
 version := "1.0-SNAPSHOT"
