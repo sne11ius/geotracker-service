@@ -27,7 +27,7 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     geoCoords.map { c => geoCoordDao.save(c, apiKey) }
   }
 
-  def load(user: User): List[GeoCoord] = {
+  def loadAll(user: User): List[GeoCoord] = {
     geoCoordDao.load(user)
   }
 

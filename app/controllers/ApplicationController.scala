@@ -26,9 +26,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
    * @return The result to display.
    */
   def index = SecuredAction.async { implicit request =>
-    val coords = geoCoordService.load(request.identity)
     val latest = geoCoordService.loadLatest(request.identity.apiKey)
-    Future.successful(Ok(views.html.home(request.identity, coords, latest)))
+    Future.successful(Ok(views.html.home(request.identity, latest)))
   }
 
   def about = UserAwareAction { implicit request =>

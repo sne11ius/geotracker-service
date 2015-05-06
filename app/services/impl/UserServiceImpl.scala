@@ -17,7 +17,7 @@ import scala.concurrent.Future
  *
  * @param userDAO The user DAO implementation.
  */
-class UserServiceImpl @Inject() (userDAO: UserDao) extends UserService {
+class UserServiceImpl @Inject() (userDao: UserDao) extends UserService {
 
   /**
    * Retrieves a user that matches the specified login info.
@@ -25,7 +25,11 @@ class UserServiceImpl @Inject() (userDAO: UserDao) extends UserService {
    * @param loginInfo The login info to retrieve a user.
    * @return The retrieved user or None if no user could be retrieved for the given login info.
    */
-  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.find(loginInfo)
+  def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDao.find(loginInfo)
+
+  def find(apiKey: UUID): Option[User] = {
+    userDao.findByApiKey(apiKey)
+  }
 
   /**
    * Saves a user.
@@ -33,7 +37,7 @@ class UserServiceImpl @Inject() (userDAO: UserDao) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = userDAO.save(user)
+  def save(user: User) = userDao.save(user)
 
   /**
    * Saves the social profile for a user.
@@ -44,9 +48,9 @@ class UserServiceImpl @Inject() (userDAO: UserDao) extends UserService {
    * @return The user for whom the profile was saved.
    */
   def save(profile: CommonSocialProfile) = {
-    userDAO.find(profile.loginInfo).flatMap {
+    userDao.find(profile.loginInfo).flatMap {
       case Some(user) => // Update user with profile
-        userDAO.save(user.copy(
+        userDao.save(user.copy(
           firstName = profile.firstName,
           lastName = profile.lastName,
           fullName = profile.fullName,
@@ -54,7 +58,7 @@ class UserServiceImpl @Inject() (userDAO: UserDao) extends UserService {
           avatarURL = profile.avatarURL
         ))
       case None => // Insert a new user
-        userDAO.save(User(
+        userDao.save(User(
           userID = UUID.randomUUID(),
           apiKey = UUID.randomUUID(),
           loginInfo = profile.loginInfo,

@@ -12,7 +12,7 @@ trait GeoCoordService {
 
   def save(geoCoords: Seq[GeoCoord], apiKey: UUID)
 
-  def load(user: User): List[GeoCoord]
+  def loadAll(user: User): List[GeoCoord]
 
   def loadLatest(apiKey: UUID): Option[GeoCoord]
 

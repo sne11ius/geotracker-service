@@ -1,79 +1,45 @@
-@(user: models.User, coords: List[GeoCoord], latest: Option[GeoCoord])
+@(user: models.User, latest: Option[GeoCoord])
 
 @main("Geotracker Service - Home", Some(user)) {
-    <div class="user col-md-6 col-md-offset-3">
-        <!--div class="row">
-            <hr class="col-md-12" />
-            <h4 class="col-md-8">Welcome, you are now signed in!</h4>
-            <div class="col-md-4 text-right">
-                <img src="@user.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" style="height:40px;" />
-            </div>
-            <hr class="col-md-12" />
-        </div-->
-        <div class="row data">
-            <div class="col-md-12">
-                <div class="row">
-                    <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
-                </div>
-            </div>
-        </div>
-        <h4>You are here</h4>
-        @if(latest.isEmpty) {
-          [No data yet]
-        } else {
-          <div id="map-canvas"></div>
-          <script>
-            docReady(function() {
-              var myLatlng = new google.maps.LatLng(@latest.get.latitude, @latest.get.longitude);
-              var mapOptions = {
-                zoom: 6,
-                center: myLatlng
-              }
-              var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-            
-              var locations = [
-                @for(coord <- coords) {
-                  new google.maps.LatLng(@coord.latitude, @coord.longitude), 
-                }
-              ];
-              var path = new google.maps.Polyline({
-                path: locations,
-                geodesic: true,
-                strokeColor: '#FF0000',
-                strokeOpacity: 1.0,
-                strokeWeight: 2
-              });
-              path.setMap(map);
-              var marker = new google.maps.Marker({
-                  position: myLatlng,
-                  map: map,
-                  title: 'You are here'
-              });
-            });
-          </script>
-        }
+  <div class="user col-md-6 col-md-offset-3">
+    <!--div class="row">
+      <hr class="col-md-12" />
+      <h4 class="col-md-8">Welcome, you are now signed in!</h4>
+      <div class="col-md-4 text-right">
+        <img src="@user.avatarURL.getOrElse(routes.Assets.at("images/silhouette.png"))" style="height:40px;" />
+      </div>
+      <hr class="col-md-12" />
+    </div-->
+    <div class="row data">
+      <div class="col-md-12">
         <div class="row">
-            <h4 class="col-md-8">Your data</h4>
-            <table class="coord-list">
-                <tr>
-                    <th>lat</th>
-                    <th>long</th>
-                    <th>alt</th>
-                    <th>acc</th>
-                    <th>speed</th>
-                    <th>time</th>
-                </tr>
-                @for(coord <- coords) {
-                    <tr>
-                        <td>@coord.latitude</td>
-                        <td>@coord.longitude</td>
-                        <td>@coord.altitude</td>
-                        <td>@coord.accuracy</td>
-                        <td>@coord.speed</td>
-                        <td>@coord.time</td>
-                    </tr>
-                }
-            </table>
+          <p class="col-md-6"><strong>Api Key:</strong></p><p class="col-md-6"><span style="white-space: nowrap;">@user.apiKey</span></p>
         </div>
+      </div>
     </div>
+    <h4>You are here</h4>
+    @if(latest.isEmpty) {
+      [No data yet]
+    } else {
+      <div id="map-canvas"></div>
+      <script>
+        docReady(function() {
+          var latest = new google.maps.LatLng(@latest.get.latitude, @latest.get.longitude);
+          var mapOptions = {
+            zoom: 9,
+            center: latest
+          }
+          var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        
+          var marker = new google.maps.Marker({
+              position: latest,
+              map: map,
+              title: 'You are here'
+          });
+        });
+      </script>
+    }
+    <div class="row">
+    </div>
+  </div>
 }
