@@ -30,6 +30,8 @@ libraryDependencies ++= Seq(
   filters
 )
 
+unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "app" )
+
 scalacOptions ++= Seq(
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-feature", // Emit warning and location for usages of features that should be imported explicitly.
