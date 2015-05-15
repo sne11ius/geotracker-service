@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A simple geo location app">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>geotracker service</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild-->
+
+  <!-- build:js bower_components/webcomponentsjs/webcomponents.min.js -->
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+  <!-- endbuild -->
+
+  <!-- will be replaced with elements/elements.vulcanized.html -->
+  <link rel="import" href="elements/elements.html">
+  <!-- endreplace-->
+</head>
+
+<body>
+  <template is="auto-binding" id="app">
+    <core-scaffold>
+      <core-header-panel navigation flex mode="seamed">
+        <core-toolbar style="background-color: #526E9C; color: #fff;">Application</core-toolbar>
+        <core-menu>
+          <core-item icon="settings" label="item1"></core-item>
+          <core-item icon="settings" label="item2"></core-item>
+        </core-menu>
+      </core-header-panel>
+      <div tool>Title</div>
+      <div class="content">Content goes here...</div>
+    </core-scaffold>
+  </template>
+
+  <!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+  <!-- endbuild-->
+</body>
+
+</html>

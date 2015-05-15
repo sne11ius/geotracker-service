@@ -1,6 +1,0 @@
-@(date: org.joda.time.DateTime, breakTime: Boolean = false)(implicit lang: play.api.i18n.Lang)
-@if(breakTime) {
-<span style="white-space: nowrap">@date.toString("yyyy-MM-dd", lang.toLocale)</span><br><span style="white-space: nowrap">@date.toString("HH:mm", lang.toLocale)</span>
-} else {
-<span style="white-space: nowrap">@date.toString("yyyy-MM-dd'T'HH:mm", lang.toLocale)</span>
-}

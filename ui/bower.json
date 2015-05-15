@@ -1,0 +1,9 @@
+{
+  "name": "ui",
+  "version": "0.0.0",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.4"
+  },
+  "devDependencies": {
+  }
+}
