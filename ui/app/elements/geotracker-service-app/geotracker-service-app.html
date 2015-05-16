@@ -1,13 +1,27 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <polymer-element name="geotracker-service-app" attributes="">
-  <template>
+  <template id="app">
     <link rel="stylesheet" href="geotracker-service-app.css">
+    <core-scaffold>
+      <core-header-panel navigation flex mode="seamed">
+        <core-toolbar style="background-color: #526E9C; color: #fff;">Application</core-toolbar>
+        <core-menu>
+          <core-item icon="settings" label="item1"></core-item>
+          <core-item icon="settings" label="item2"></core-item>
+        </core-menu>
+      </core-header-panel>
+      <div tool>Title</div>
+      <div class="content">Content goes here...</div>
+    </core-scaffold>
   </template>
   <script>
     (function () {
+      'use strict';
       Polymer({
-        // define element prototype here
+        ready: function() {
+          console.log('geotracker-service is ready to rock!');
+        }
       });
     })();
   </script>

@@ -6,26 +6,3 @@ html, body {
 body {
   font-family: sans-serif;
 }
-
-core-scaffold {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.content {
-  background-color: #fff;
-  height: 5000px;
-  padding: 20px;
-}
-
-/* some default styles for mode="cover" on core-scaffold */
-core-scaffold[mode=cover]::shadow core-header-panel::shadow #mainContainer {
-  left: 120px;
-}
-
-core-scaffold[mode=cover] .content {
-  margin: 20px 100px 20px 0;
-}
