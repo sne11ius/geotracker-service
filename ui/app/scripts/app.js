@@ -1,20 +1,20 @@
 (function (document) {
-  'use strict';
-
-  // Grab a reference to our auto-binding template
-  // and give it some initial binding values
-  // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
-  //var app = document.querySelector('#app');
-  //app.appName = 'Geotracker Service';
-
-  // Listen for template bound event to know when bindings
-  // have resolved and content has been stamped to the page
-  /*
-  app.addEventListener('template-bound', function() {
-    console.log('Our app is ready to rock!');
+  var template = document.querySelector('#t');
+  template.pages = [
+    {name: 'Map', hash: 'map', icon: 'maps:map'},
+    {name: 'Calendar', hash: 'calendar', icon: 'today'},
+    {name: 'settings', hash: 'settings', icon: 'settings'},
+  ];
+  
+  template.menuItemSelected = function(e, detail/*, sender*/) {
+    if (detail.isSelected) {
+      this.$ && this.$.scaffold.closeDrawer();
+    }
+  };
+  
+  var DEFAULT_ROUTE = 'map';
+  
+  template.addEventListener('template-bound', function(e) {
+    this.route = this.route || DEFAULT_ROUTE;
   });
-  */
-
-// wrap document so it plays nice with other libraries
-// http://www.polymer-project.org/platform/shadow-dom.html#wrappers
 })(wrap(document));
