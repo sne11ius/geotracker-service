@@ -3,6 +3,15 @@
 }
 
 :host .label {
-	font-size: 22px;
+	font-size: 14px;
 	margin-left: 10px;
+}
+
+:host #logout-button {
+	position: relative;
+  right: -45px;
+}
+
+:host a {
+	color: white;
 }

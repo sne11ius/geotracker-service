@@ -7,7 +7,7 @@ GET        /ui                         com.tuplejump.playYeoman.Yeoman.index
 
 # Login
 GET    /signIn                            @controllers.ApplicationController.signIn
-#GET    /signOut                           @controllers.ApplicationController.signOut
+GET    /signOut                           @controllers.ApplicationController.signOut
 #POST   /signUp                            @controllers.SignUpController.signUp
 POST   /authenticate/credentials          @controllers.CredentialsAuthController.authenticate
 
