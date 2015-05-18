@@ -17,6 +17,8 @@ trait GeoCoordDao {
 
   def loadLatest(apiKey: UUID): Option[GeoCoord]
 
+  def load(user: User, interval: Interval): List[GeoCoord]
+
   def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord]
 
 }

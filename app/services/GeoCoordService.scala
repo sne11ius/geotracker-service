@@ -16,6 +16,8 @@ trait GeoCoordService {
 
   def loadLatest(apiKey: UUID): Option[GeoCoord]
 
+  def load(user: User, interval: Interval): List[GeoCoord]
+
   def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord]
 
   def findMatchingIntervals(user: User, location: NamedLocation, interval: Interval): List[Interval]

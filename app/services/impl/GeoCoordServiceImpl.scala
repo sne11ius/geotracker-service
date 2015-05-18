@@ -35,6 +35,10 @@ class GeoCoordServiceImpl @Inject() (geoCoordDao: GeoCoordDao) extends GeoCoordS
     geoCoordDao.loadLatest(apiKey)
   }
 
+  override def load(user: User, interval: Interval): List[GeoCoord] = {
+    geoCoordDao.load(user, interval)
+  }
+
   override def findMatchingCoordinates(user: User, location: NamedLocation, interval: Interval): List[GeoCoord] = {
     geoCoordDao.findMatchingCoordinates(user, location, interval)
   }

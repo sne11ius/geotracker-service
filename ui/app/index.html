@@ -21,6 +21,7 @@
   <!-- will be replaced with elements/elements.vulcanized.html -->
   <link rel="import" href="elements/elements.html">
   <!-- endreplace-->
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
 </head>
 
 <body unresolved fullbleed>
@@ -51,7 +52,7 @@
           <template repeat="{{page, i in pages}}">
             <section hash="{{page.hash}}" layout vertical center-center>
               <template if="{{0 == i}}">
-                <geotracker-map></geotracker-map>
+                <geotracker-map baseUrl="http://localhost:9000/mit/geotracker-service"></geotracker-map>
               </template>
               <template if="{{1 == i}}">
                 Calendar

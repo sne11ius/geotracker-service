@@ -5,6 +5,10 @@ GET        /user                       @controllers.ApplicationController.user
 GET        /assets/*file               controllers.Assets.at(path="/public", file)
 GET        /ui                         com.tuplejump.playYeoman.Yeoman.index
 
+POST   /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
+GET    /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
+GET    /rest/coordinates/coords                @controllers.GeoCoordController.loadCoords(begin: Option[Long], end: Option[Long])
+
 # Login
 GET    /signIn                            @controllers.ApplicationController.signIn
 GET    /signOut                           @controllers.ApplicationController.signOut
