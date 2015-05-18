@@ -92,7 +92,7 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
     DB withSession { implicit session =>
       val begin = interval.getStartMillis
       val end = interval.getEndMillis
-      val coords = slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).filter(
+      slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).filter(
         c => c.time >= begin && c.time <= end
       ).list.map { c =>
         GeoCoord(
@@ -106,8 +106,6 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
           new DateTime(c.time)
         )
       }
-      Logger.debug(s"#coords: $coords.size")
-      coords
     }
   }
 

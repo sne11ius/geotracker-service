@@ -177,8 +177,6 @@ class GeoCoordController @Inject() (implicit val env: Environment[User, SessionA
       Unauthorized
     } else {
       val coord = geoCoordService.loadLatest(UUID.fromString(apiKey))
-      Logger.debug(s"Api key: $apiKey")
-      Logger.debug(s"Latest: $coord")
       Ok(Json.toJson(coord))
     }
   }
