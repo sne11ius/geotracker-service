@@ -51,6 +51,8 @@
         handleError: function(event, error) {
           console.log('got error');
           this.authenticated = false;
+          window.location.hash = '';
+          window.location.pathname = '/mit/geotracker-service';
         }
       });
     })();
