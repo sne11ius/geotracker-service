@@ -1,0 +1,98 @@
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
+
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A simple geo location app">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>geotracker service</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="/mit/geotracker-service/ui/styles/main.css">
+  <!-- endbuild-->
+
+  <!-- build:js /mit/geotracker-service/ui/bower_components/webcomponentsjs/webcomponents.min.js -->
+  <script src="/mit/geotracker-service/ui/bower_components/webcomponentsjs/webcomponents.js"></script>
+  <!-- endbuild -->
+
+  <!-- will be replaced with /mit/geotracker-service/ui/elements/elements.vulcanized.html -->
+  <link rel="import" href="/mit/geotracker-service/ui/elements/elements.html">
+  <!-- endreplace-->
+  <style type="text/css">
+  body {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-weight: 300;
+  }
+  .header {
+    width: 100%;
+    height: 150px;
+    background-color: #4F7DC9;
+    font-size: 30px;
+    padding: 40px;
+    color: white;
+  }
+  .login-form form {
+    padding-top: 120px;
+  }
+  paper-input, paper-input-decorator {
+    width: 340px;
+  }
+  paper-button.colored {
+    color: #4285f4;
+  }
+  .sign-up {
+    margin-top: 50px;
+  }
+  .hint {
+    line-height: 37px;
+    color: #4F7DC9;
+  }
+  input {
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    color: #4285f4;
+    font-size: 16px;
+  }
+  </style>
+</head>
+
+<body unresolved fullbleed>
+  <div class="header">
+    Geotracker Service
+  </div>
+  <div class="login-form" layout horizontal center-center fit>
+    @request.flash.get("error").map { msg =>
+      <div class="error">
+        @msg
+      </div>
+    }
+    <form action="@routes.CredentialsAuthController.authenticate()" method="post">
+      <paper-input-decorator floatingLabel label="email" type="email">
+        <input is="core-input" name="identifier" type="email" required>
+      </paper-input-decorator>
+      <paper-input-decorator floatingLabel label="password">
+        <input is="core-input" type="password" name="password" required>
+      </paper-input-decorator>
+      <div horizontal layout>
+        <div flex></div>
+        <paper-button class="colored">
+          <input type="submit" value="Login">
+          <!--span class="label">Login</span-->
+        </paper-button>
+      </div>
+      <div horizontal layout class="sign-up">
+        <div flex></div>
+        <paper-button class="colored">
+          <span class="label">Sign Up</span>
+        </paper-button>
+      </div>
+    </form>
+  </div>
+</body>

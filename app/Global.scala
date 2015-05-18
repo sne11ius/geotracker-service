@@ -1,7 +1,4 @@
 import com.google.inject.Guice
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor
-import com.mohiva.play.htmlcompressor.HTMLCompressorFilter
-import com.mohiva.play.xmlcompressor.XMLCompressorFilter
 import play.api.Application
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -34,6 +31,6 @@ object Global extends WithFilters(new GzipFilter()) with SecuredSettings with Lo
   }
 
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    super.onNotAuthorized(request, lang)
+    Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))))
   }
 }

@@ -1,5 +1,14 @@
-GET        /                           com.tuplejump.playYeoman.Yeoman.redirectRoot(base="/mit/geotracker-service/ui/")
+GET        /                           @controllers.ApplicationController.index                           
+#com.tuplejump.playYeoman.Yeoman.redirectRoot(base="/mit/geotracker-service/ui/")
+GET        /user                       @controllers.ApplicationController.user
 # Map static resources from the /public folder to the /assets URL path
 GET        /assets/*file               controllers.Assets.at(path="/public", file)
 GET        /ui                         com.tuplejump.playYeoman.Yeoman.index
+
+# Login
+GET    /signIn                            @controllers.ApplicationController.signIn
+#GET    /signOut                           @controllers.ApplicationController.signOut
+#POST   /signUp                            @controllers.SignUpController.signUp
+POST   /authenticate/credentials          @controllers.CredentialsAuthController.authenticate
+
 ->         /ui/                        yeoman.Routes

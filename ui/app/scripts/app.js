@@ -1,9 +1,10 @@
 (function (document) {
+  
   var template = document.querySelector('#t');
   template.pages = [
     {name: 'Map', hash: 'map', icon: 'maps:map'},
     {name: 'Calendar', hash: 'calendar', icon: 'today'},
-    {name: 'settings', hash: 'settings', icon: 'settings'},
+    {name: 'Settings', hash: 'settings', icon: 'settings'},
   ];
   
   template.menuItemSelected = function(e, detail/*, sender*/) {

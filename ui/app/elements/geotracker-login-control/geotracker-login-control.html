@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-login-control" attributes="baseUrl user">
+  <template>
+    <link rel="stylesheet" href="geotracker-login-control.css">
+    
+    <core-ajax
+      auto
+      url="{{baseUrl}}"
+      handleAs="json"
+      on-core-response="{{handleResponse}}"
+      on-core-error="{{handleError}}">
+    </core-ajax>
+    
+    <template if="{{authenticated}}">
+      yep
+    </template>
+    <template if="{{!authenticated}}">
+      <paper-button on-click="{{loginClicked}}">
+        <core-icon icon="social:person"></core-icon>
+        <span class="label">Login</span>
+      </paper-button>
+    </template>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        authenticated: false,
+        
+        created: function() {
+          console.log(this.getAttribute('baseUrl'));
+        },
+        
+        loginClicked: function() {
+          console.log('loginClicked');
+        },
+        handleResponse: function(event, response) {
+          console.log('got response');
+          console.log(response);
+          this.user = response;
+          /*
+          console.log(event);
+          console.log(response);
+          */
+        },
+        handleError: function(event, error) {
+          console.log('got error');
+          /*
+          console.log(event);
+          console.log(error);
+          */
+        }
+      });
+    })();
+  </script>
+</polymer-element>
