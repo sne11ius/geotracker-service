@@ -3,18 +3,20 @@
 <polymer-element name="geotracker-calendar" attributes="">
   <template>
     <link rel="stylesheet" href="geotracker-calendar.css">
-    <core-toolbar>
-      <paper-tabs selected="{{selected}}" noink>
-        <paper-tab>Calendar</paper-tab>
-        <paper-tab>Locations</paper-tab>
-      </paper-tabs>
-    </core-toolbar>
-    <template if="{{0 == selected}}">
-      <div id="calendar"></div>
-    </template>
-    <template if="{{1 == selected}}">
-      <geotracker-location-list baseUrl="/mit/geotracker-service"></geotracker-location-list>
-    </template>
+    <core-header-panel flex>
+      <core-toolbar>
+        <paper-tabs selected="{{selected}}" noink>
+          <paper-tab>Calendar</paper-tab>
+          <paper-tab>Locations</paper-tab>
+        </paper-tabs>
+      </core-toolbar>
+      <template if="{{0 == selected}}">
+        <div id="calendar"></div>
+      </template>
+      <template if="{{1 == selected}}">
+        <geotracker-location-list baseUrl="/mit/geotracker-service"></geotracker-location-list>
+      </template>
+    </core-header-panel>
   </template>
   <script>
     (function () {
