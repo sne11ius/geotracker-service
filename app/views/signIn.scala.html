@@ -23,10 +23,13 @@
   <!-- will be replaced with /mit/geotracker-service/ui/elements/elements.vulcanized.html -->
   <link rel="import" href="/mit/geotracker-service/ui/elements/elements.html">
   <!-- endreplace-->
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <script src="/mit/geotracker-service/ui/bower_components/jquery/dist/jquery.min.js"></script>
   <style type="text/css">
   body {
     font-family: 'Roboto', Arial, sans-serif;
     font-weight: 300;
+    overflow: hidden;
   }
   .header {
     width: 100%;
@@ -35,9 +38,15 @@
     font-size: 30px;
     padding: 40px;
     color: white;
+    z-index: 1;
+    opacity: 0.8;
+    position: absolute;
   }
   .login-form form {
-    padding-top: 120px;
+    margin-top: 120px;
+    background-color: white;
+    padding: 20px;
+    z-index: 1;
   }
   paper-input, paper-input-decorator {
     width: 340px;
@@ -60,6 +69,18 @@
     color: #4285f4;
     font-size: 16px;
   }
+  #background-map {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 110%;
+    -webkit-filter: blur(2.5px);
+    -moz-filter: blur(2.5px);
+    -ms-filter: blur(2.5px);
+    -o-filter: blur(2.5px);
+    filter: blur(2.5px);
+    position: absolute;
+  }
   </style>
 </head>
 
@@ -67,6 +88,7 @@
   <div class="header">
     Geotracker Service
   </div>
+  <div id="background-map"></div>
   <div class="login-form" layout horizontal center-center fit>
     @request.flash.get("error").map { msg =>
       <div class="error">
@@ -95,4 +117,17 @@
       </div>
     </form>
   </div>
+  <script>
+    $(document).ready(function() {
+      var mapOptions = {
+        zoom: 15,
+        center: new google.maps.LatLng(53.106382, 8.770247),
+        disableDefaultUI: true
+      };
+      var map = new google.maps.Map(document.getElementById('background-map'), mapOptions);
+      window.setInterval(function() {
+        map.panBy(2.5, 1);
+      }, 30);
+    });
+  </script>
 </body>
