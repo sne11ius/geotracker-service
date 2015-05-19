@@ -76,8 +76,6 @@
           this.$.endDialog.open();
         },
         attached: function() {
-          console.log('attached');
-          console.log(window.google)
           var mapOptions = {
             zoom: 6,
           };
@@ -91,13 +89,12 @@
             position: center,
             map: this.map,
             title: 'You are here'
-        });
+          });
         },
         handleLatestError: function(event, error) {
           console.error(error);
         },
         handleCoordsResponse: function(event, response) {
-          console.log(response.response);
           if ('undefined' !== typeof this.path) {
             this.path.setMap(null);
           }

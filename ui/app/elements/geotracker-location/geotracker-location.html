@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-location" attributes="location">
+  <template>
+    <link rel="stylesheet" href="geotracker-location.css">
+    <core-header-panel flex>
+      <core-toolbar>
+        <core-icon icon="communication:location-on"></core-icon>
+        <div flex>
+          <div class="name">{{location.name}}</div>
+        </div>
+        <paper-icon-button icon="settings"></paper-icon-button>
+        <paper-icon-button icon="delete"></paper-icon-button>
+      </core-toolbar>
+      <div id="map"></div>
+    </core-header-panel>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        locationChanged: function() {
+          var center = new google.maps.LatLng(this.location.latitude, this.location.longitude);
+          var mapOptions = {
+            zoom: 10,
+            center: center,
+            disableDefaultUI: true,
+            scrollwheel: true,
+            draggable: false
+          };
+          var map = new google.maps.Map(this.$.map, mapOptions);
+          var marker = new google.maps.Marker({
+            position: center,
+            map: map,
+            title: this.location.name
+          });
+          var circle = new google.maps.Circle({
+            strokeColor: '#03a9f4',
+            strokeWeight: 1,
+            fillColor: '#03a9f4',
+            fillOpacity: .1,
+            map: map,
+            center: center,
+            radius: this.location.radius
+          });
+          map.fitBounds(circle.getBounds());
+          google.maps.event.addDomListener(window, 'resize', function() {
+            map.setCenter(center);
+          });
+          google.maps.event.addListener(map,'zoom_changed',function () {
+            map.setCenter(center);
+          })
+        }
+      });
+    })();
+  </script>
+</polymer-element>

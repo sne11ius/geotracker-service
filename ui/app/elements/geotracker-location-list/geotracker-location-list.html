@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-location-list" attributes="baseUrl">
+  <template>
+    <link rel="stylesheet" href="geotracker-location-list.css">
+    <core-ajax
+      id="locations"
+      auto
+      handleAs="json"
+      url="{{baseUrl}}/rest/locations"
+      on-core-response="{{handleLocationsResponse}}"
+      on-core-error="{{handleLocationsError}}">
+    >
+    </core-ajax>
+    <template repeat="{{l in locations}}">
+      <geotracker-location location="{{l}}"></geotracker-location>
+    </template>  
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        locations: [],
+        handleLocationsResponse: function(evt, resp) {
+          this.locations = resp.response;
+        },
+        handleLocationsError: function(evt, err) {
+          console.error(err)
+        },
+      });
+    })();
+  </script>
+</polymer-element>

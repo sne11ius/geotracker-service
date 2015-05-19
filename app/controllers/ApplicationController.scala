@@ -78,11 +78,16 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 //    }
 //  }
 //
-  def signOut = SecuredAction.async { implicit request =>
-    val result = Future.successful(Redirect(routes.ApplicationController.index()))
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
+  def signOut = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => {
+        val result = Future.successful(Redirect(routes.ApplicationController.index()))
+        env.eventBus.publish(LogoutEvent(user, request, request2lang))
 
-    request.authenticator.discard(result)
+        request.authenticator.get.discard(result)
+      }
+      case _ => Future.successful(Redirect(routes.ApplicationController.signIn))
+    }
   }
 
   def view(template: String) = UserAwareAction { implicit request =>
