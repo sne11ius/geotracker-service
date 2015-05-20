@@ -12,6 +12,7 @@ GET    /rest/coordinates/coords                @controllers.GeoCoordController.l
 
 # Locations
 GET    /rest/locations                         @controllers.NamedLocationsController.listLocations
+DELETE /rest/locations/:id                     @controllers.NamedLocationsController.delete(id: Long)
 
 # Login
 GET    /signIn                            @controllers.ApplicationController.signIn

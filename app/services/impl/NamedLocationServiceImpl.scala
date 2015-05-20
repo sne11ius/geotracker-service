@@ -22,4 +22,7 @@ class NamedLocationServiceImpl @Inject() (namedLocationDao: NamedLocationDao) ex
     namedLocationDao.find(user, locationId)
   }
 
+  override def delete(location: NamedLocation) = {
+    namedLocationDao.delete(location)
+  }
 }

@@ -35,6 +35,17 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
     Future.successful(Ok(Json.toJson(locations)))
   }
 
+  def delete(id: Long) = SecuredAction.async { implicit request =>
+    Logger.debug(s"Delete by id: $id")
+    namedLocationsService.find(request.identity, id) match {
+      case Some(location) => {
+        namedLocationsService.delete(location)
+      }
+      case _ => {}
+    }
+    Future.successful(NoContent)
+  }
+
   //def details(locationId: Long) = SecuredAction.async { implicit request =>
   //  namedLocationsService.find(request.identity, locationId) match {
   //    case None => Future.successful(Forbidden)

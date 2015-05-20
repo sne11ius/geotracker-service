@@ -46,4 +46,9 @@ class NamedLocationDaoSlick @Inject() () extends NamedLocationDao {
     }
   }
 
+  override def delete(location: NamedLocation) = {
+    DB withSession { implicit session =>
+      slickNamedLocations.filter { _.id === location.id }.delete
+    }
+  }
 }

@@ -13,4 +13,5 @@ trait NamedLocationDao {
 
   def find(user: User, locationId: Long): Option[NamedLocation]
 
+  def delete(location: NamedLocation)
 }

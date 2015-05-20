@@ -1,8 +1,16 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="geotracker-location" attributes="location">
+<polymer-element name="geotracker-location" attributes="location, baseUrl">
   <template>
     <link rel="stylesheet" href="geotracker-location.css">
+    <core-ajax
+      id="remove"
+      method="DELETE"
+      url="{{baseUrl}}/rest/locations/{{location.id}}"
+      on-core-response="{{handleLocationDeleteResponse}}"
+      on-core-error="{{handleLocationDeleteError}}">
+    >
+    </core-ajax>
     <core-header-panel flex>
       <core-toolbar>
         <core-icon icon="communication:location-on"></core-icon>
@@ -10,7 +18,7 @@
           <div class="name">{{location.name}}</div>
         </div>
         <paper-icon-button icon="settings"></paper-icon-button>
-        <paper-icon-button icon="delete"></paper-icon-button>
+        <paper-icon-button icon="delete" on-click="{{deleteLocation}}"></paper-icon-button>
       </core-toolbar>
       <div id="map"></div>
     </core-header-panel>
@@ -49,7 +57,18 @@
           google.maps.event.addListener(map,'zoom_changed',function () {
             map.setCenter(center);
           })
-        }
+        },
+        deleteLocation: function() {
+          console.log('delete clicked');
+          this.$.remove.go();
+        },
+        handleLocationDeleteResponse: function(evt, resp) {
+          console.log('handleLocationDeleteResponse');
+          this.fire('removed');
+        },
+        handleLocationDeleteError: function(evt, err) {
+          console.log('handleLocationDeleteError');
+        },
       });
     })();
   </script>

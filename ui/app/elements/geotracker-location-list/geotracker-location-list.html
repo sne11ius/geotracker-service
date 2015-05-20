@@ -13,7 +13,7 @@
     >
     </core-ajax>
     <template repeat="{{l in locations}}">
-      <geotracker-location location="{{l}}"></geotracker-location>
+      <geotracker-location location="{{l}}" on-removed="{{removed}}" baseUrl="{{baseUrl}}"></geotracker-location>
     </template>  
   </template>
   <script>
@@ -26,6 +26,10 @@
         handleLocationsError: function(evt, err) {
           console.error(err)
         },
+        removed: function() {
+          console.log('child location removed');
+          this.$.locations.go();
+        }
       });
     })();
   </script>
