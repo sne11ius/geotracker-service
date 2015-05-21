@@ -46,3 +46,31 @@ core-menu > paper-item.core-selected {
     height: 100%;
   }
 }
+
+html /deep/ paper-input.fullWidth {
+  width: 100%;
+}
+
+@media (max-width: 370px) {
+  html /deep/ #createLocationDialog {
+    width: 300px;
+  }
+}
+
+@media (max-width: 1700px) {
+  html /deep/ #createLocationDialog {
+    width: 700px;
+  }
+}
+
+@media (max-height: 650px) {
+  body /deep/ #locationMap {
+    height: 324px;
+  }
+}
+
+@media (max-height: 1000px) {
+  body /deep/ #locationMap {
+    height: 450px;
+  }
+}

@@ -3,6 +3,7 @@
   height: 300px;
   font-size: 15px;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 :host core-header-panel {

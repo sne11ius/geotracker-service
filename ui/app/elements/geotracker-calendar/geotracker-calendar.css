@@ -17,6 +17,12 @@
 	font-size: 12px;
 }
 
+:host #add-location-button {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+}
+
 /*!
  * FullCalendar v2.3.1 Stylesheet
  * Docs & License: http://fullcalendar.io/
