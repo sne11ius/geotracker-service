@@ -17,7 +17,7 @@
         <div flex>
           <div class="name">{{location.name}}</div>
         </div>
-        <paper-icon-button icon="settings"></paper-icon-button>
+        <paper-icon-button icon="settings" on-click="{{editLocation}}"></paper-icon-button>
         <paper-icon-button icon="delete" on-click="{{deleteLocation}}"></paper-icon-button>
       </core-toolbar>
       <div id="map"></div>
@@ -57,6 +57,9 @@
           google.maps.event.addListener(map,'zoom_changed',function () {
             map.setCenter(center);
           })
+        },
+        editLocation: function() {
+          console.log('editing location ' + this.location.name);
         },
         deleteLocation: function() {
           console.log('delete clicked');

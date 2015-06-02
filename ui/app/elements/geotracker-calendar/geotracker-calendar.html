@@ -3,6 +3,7 @@
 <polymer-element name="geotracker-calendar" attributes="">
   <template>
     <link rel="stylesheet" href="geotracker-calendar.css">
+    <geotracker-globals id="globals"></geotracker-globals>
     <core-header-panel flex>
       <core-toolbar>
         <paper-tabs selected="{{selected}}" noink>
@@ -20,54 +21,13 @@
     <template if="{{1 == selected}}">
       <paper-fab id="add-location-button" icon="add" on-click="{{addLocationClicked}}"></paper-fab>
     </template>
-    <paper-action-dialog id="createLocationDialog" heading="Create location" backdrop on-core-overlay-open={{dialogStateChanged}} closeSelector="[dismissive]">
-      <paper-input id="nameInput" label="Name" class="fullWidth" value="{{editor.locationName}}"></paper-input>
-      <div id="locationMap"></div>
-      <paper-button dismissive>Cancel</paper-button>
-      <paper-button affirmative autofocus on-click="{{saveLocationClicked}}">Create</paper-button>
-    </paper-action-dialog>
   </template>
   <script>
     (function () {
       Polymer({
         selected: 0,
-        editor: {
-          locationName: ''
-        },
         selectedChanged: function() {
           $(this.$.calendar).fullCalendar('render');
-        },
-        dialogStateChanged: function(event) {
-          var opened = event && event.detail;
-          if (opened) {
-            this.editor.locationName = '';
-            var div = this.$.locationMap;
-            var _this = this;
-            window.setTimeout(function() {
-              _this.editor.center = new google.maps.LatLng(53.083, 8.8044);
-              var mapOptions = {
-                zoom: 13,
-                center: _this.editor.center
-              };
-              _this.editor.map = new google.maps.Map(div, mapOptions);
-              _this.editor.circle = new google.maps.Circle({
-                map: _this.editor.map,
-                strokeColor: '#03a9f4',
-                strokeWeight: 1,
-                fillColor: '#03a9f4',
-                fillOpacity: .1,
-                radius: 2000,
-                editable: true
-              }); 
-              if ('geolocation' in navigator) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                  _this.editor.center = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                  _this.editor.map.setCenter(_this.editor.center);
-                  _this.editor.circle.setCenter(_this.editor.center);
-                });
-              }
-            }, 100);
-          }
         },
         isInvalid: function(value) { return false; },
         attached: function() {
@@ -80,37 +40,41 @@
             allDaySlot: false,
             defaultView: 'agendaWeek'
           });
-          this.dialog = this.$.createLocationDialog;
           window.setTimeout(function() {
             $(this.$.calendar).fullCalendar('render');
           }, 500);
         },
         addLocationClicked: function() {
-          this.$.createLocationDialog.toggle();
-          this.dialog.notifyResize();
+          this.$.globals.locationEditor._this = this;
+          this.$.globals.locationEditor.addEventListener('save', this.saveLocationClicked);
+          this.$.globals.locationEditor.addEventListener('close', this.locationEditorClosed);
+          this.$.globals.locationEditor.reset();
+          this.$.globals.locationEditor.open();
         },
         onCompleted: function() {
           console.log('oncompleted');
         },
         saveLocationClicked: function() {
           console.log('User clicked save');
-          console.log(this.editor.circle.getCenter());
-          this.newLocation = {
-            name: this.editor.locationName,
-            latitude: this.editor.circle.getCenter().lat(),
-            longitude: this.editor.circle.getCenter().lng(),
-            radius: this.editor.circle.getRadius()
-          }
-          if ('' === newLocation.name) {
+          var _this = this._this;
+          var location = _this.$.globals.locationEditor.location;
+          console.log(location);
+          if ('' === location.name) {
             var toast = document.createElement('paper-toast');
             toast.setAttribute('text', 'A location name is required.');
             document.body.appendChild(toast);
             toast.show();
             return;
           } else {
-            console.log(this.newLocation);
-            this.dialog.close();
+            console.log('now posting location...');
+            _this.$.globals.locationEditor.close();
           }
+        },
+        locationEditorClosed: function() {
+          console.log('dialog closed');
+          this.removeEventListener('save', this._this.saveLocationClicked);
+          this.removeEventListener('close', this._this.locationEditorClosed);
+          this._this = undefined;
         }
       });
     })();

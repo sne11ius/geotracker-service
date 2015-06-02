@@ -52,13 +52,13 @@ html /deep/ paper-input.fullWidth {
 }
 
 @media (max-width: 370px) {
-  html /deep/ #createLocationDialog {
+  html /deep/ #editLocationDialog {
     width: 300px;
   }
 }
 
 @media (max-width: 1700px) {
-  html /deep/ #createLocationDialog {
+  html /deep/ #editLocationDialog {
     width: 700px;
   }
 }

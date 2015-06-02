@@ -1,0 +1,91 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-location-editor" attributes="location">
+  <template>
+    <link rel="stylesheet" href="geotracker-location-editor.css">
+    
+    <paper-action-dialog id="editLocationDialog" heading="Create location" backdrop on-core-overlay-open={{dialogStateChanged}} closeSelector="[dismissive]">
+      <paper-input id="nameInput" label="Name" class="fullWidth" value="{{location.name}}"></paper-input>
+      <div id="locationMap"></div>
+      <paper-button dismissive>Cancel</paper-button>
+      <paper-button affirmative autofocus on-click="{{saveLocationClicked}}">Create</paper-button>
+    </paper-action-dialog>
+  </template>
+  <script>
+    (function () {
+      var DEFAULT_LAT = 53.083,
+          DEFAULT_LNG = 8.8044,
+          DEFAULT_RADIUS = 2222,
+          DEFAULT_LOCATION = {
+            name: '',
+            latitude: DEFAULT_LAT,
+            longitude: DEFAULT_LNG,
+            radius: DEFAULT_RADIUS
+          };
+      Polymer({
+        location: DEFAULT_LOCATION,
+        reset: function() {
+          this.location = DEFAULT_LOCATION;
+        },
+        open: function() {
+          this.$.editLocationDialog.open();
+          this.$.editLocationDialog.notifyResize();
+        },
+        close: function() {
+          this.$.editLocationDialog.close();
+        },
+        dialogStateChanged: function(event) {
+          var opened = event && event.detail;
+          if (opened) {
+            var div = this.$.locationMap;
+            var _this = this;
+            this.async(function() {
+              var mapOptions = {
+                zoom: 13,
+                center: new google.maps.LatLng(this.location.latitude, this.location.longitude)
+              };
+              if ('undefined' === typeof this.map) {
+                this.map = new google.maps.Map(div, mapOptions);
+                this.circle = new google.maps.Circle({
+                  map: this.map,
+                  strokeColor: '#03a9f4',
+                  strokeWeight: 1,
+                  fillColor: '#03a9f4',
+                  fillOpacity: .1,
+                  radius: this.location.radius,
+                  editable: true
+                });
+                var _this = this;
+                google.maps.event.addListener(this.circle, 'radius_changed', function() {
+                  _this.location.radius = _this.circle.getRadius();
+                });
+                google.maps.event.addListener(this.circle, 'center_changed', function() {
+                  _this.location.radius = _this.circle.getRadius();
+                  _this.location.latitude = _this.circle.getCenter().lat();
+                  _this.location.longitude = _this.circle.getCenter().lng();
+                });
+              }
+              if (this.location.latitude === DEFAULT_LAT && this.location.longitude === DEFAULT_LNG && this.location.radius === DEFAULT_RADIUS) {
+                if ('geolocation' in navigator) {
+                  navigator.geolocation.getCurrentPosition(function(pos) {
+                    console.log('got location');
+                    _this.location.latitude = pos.coords.latitude;
+                    _this.location.longitude = pos.coords.longitude;
+                    var center = new google.maps.LatLng(_this.location.latitude, _this.location.longitude);
+                    _this.map.setCenter(center);
+                    _this.circle.setCenter(center);
+                  });
+                }
+              }
+            });
+          } else {
+            this.fire('close');
+          }
+        },
+        saveLocationClicked: function() {
+          this.fire('save');
+        }
+      });
+    })();
+  </script>
+</polymer-element>

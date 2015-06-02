@@ -15,6 +15,7 @@ import org.joda.time.Interval
 import play.api.libs.json._
 import play.api.libs.json.Json
 import models.NamedLocation
+import argonaut._
 
 class NamedLocationsController @Inject() (implicit val env: Environment[User, SessionAuthenticator], val namedLocationsService: NamedLocationService, geoCoordService: GeoCoordService) extends Silhouette[User, SessionAuthenticator] {
 
@@ -33,6 +34,49 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
   def listLocations = SecuredAction.async { implicit request =>
     val locations = namedLocationsService.loadLocations(request.identity)
     Future.successful(Ok(Json.toJson(locations)))
+  }
+
+  // Using argonaut
+  implicit def DecodeGeoCoord: DecodeJson[NamedLocation] =
+    DecodeJson(c => for {
+      id <- (c --\ "id").as[Long]
+      name <- (c --\ "name").as[String]
+      latitude <- (c --\ "latitude").as[Double]
+      longitude <- (c --\ "longitude").as[Double]
+      radius <- (c --\ "radius").as[Float]
+    } yield NamedLocation(
+      Some(id), name, latitude, longitude, radius
+    ))
+
+  def update(id: Long) = SecuredAction.async { implicit request =>
+    Logger.debug(s"Update by id: $id")
+    namedLocationsService.find(request.identity, id) match {
+      case Some(location) => {
+        request.body.asJson match {
+          case Some(text) => {
+            val option: Option[NamedLocation] = Parse.decodeOption[NamedLocation](text.toString())
+            Parse.decodeOption[NamedLocation](text.toString()) match {
+              case Some(location) => {
+                Logger.debug(s"location: $location")
+                Future.successful(Ok)
+              }
+              case _ => {
+                Logger.debug("Could not parse shit D:")
+                Future.successful(BadRequest)
+              }
+            }
+          }
+          case _ => {
+            Logger.debug("Could not body as text D:")
+            Future.successful(BadRequest)
+          }
+        }
+      }
+      case _ => {
+        Logger.warn(s"User has no location with id $id")
+        Future.successful(NotFound)
+      }
+    }
   }
 
   def delete(id: Long) = SecuredAction.async { implicit request =>
