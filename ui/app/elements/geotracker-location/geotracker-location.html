@@ -98,10 +98,11 @@
             _this.$.globals.locationEditor.close();
             console.log('now updating location...');
             _this.$.update.go();
-            var center = new google.maps.LatLng(this.location.latitude, this.location.longitude);
-            this.map.setCenter(center);
-            this.circle.setCenter(center);
-            this.circle.setRadius(this.location.radius);
+            var center = new google.maps.LatLng(_this.location.latitude, _this.location.longitude);
+            _this.map.setCenter(center);
+            _this.circle.setCenter(center);
+            _this.circle.setRadius(_this.location.radius);
+            _this.map.fitBounds(_this.circle.getBounds());
           }
         },
         locationEditorClosed: function() {
