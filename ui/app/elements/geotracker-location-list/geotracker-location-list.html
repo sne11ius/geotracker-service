@@ -28,6 +28,10 @@
         },
         removed: function() {
           console.log('child location removed');
+          this.reload();
+        },
+        reload: function() {
+          console.log('Updating list');
           this.$.locations.go();
         }
       });

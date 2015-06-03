@@ -48,19 +48,15 @@
       
       <core-toolbar tool flex>
         <div flex>{{selectedPage.page.name}}</div>
-        <geotracker-login-control id="login-control" baseUrl="http://localhost:9000/mit/geotracker-service/user"></geotracker-login-control>
+        <geotracker-login-control id="login-control" baseUrl="/mit/geotracker-service/user"></geotracker-login-control>
       </core-toolbar>
       
       <div layout horizontal center-center fit>
         <core-animated-pages id="pages" valueattr="hash" selected="{{route}}" transitions="slide-from-right">
           <template repeat="{{page, i in pages}}">
             <section hash="{{page.hash}}" layout vertical center-center>
-              <template if="{{0 == i}}">
-                <geotracker-map baseUrl="http://localhost:9000/mit/geotracker-service"></geotracker-map>
-              </template>
-              <template if="{{1 == i}}">
-                <geotracker-calendar></geotracker-calendar>
-              </template>
+              <geotracker-map hidden?="{{0 != i}}" baseUrl="/mit/geotracker-service"></geotracker-map>
+              <geotracker-calendar hidden?="{{1 != i}}" baseUrl="/mit/geotracker-service"></geotracker-calendar>
               <template if="{{2 == i}}">
                 Settings
               </template>
@@ -76,4 +72,3 @@
 </body>
 
 </html>
-

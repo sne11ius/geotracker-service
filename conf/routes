@@ -12,6 +12,7 @@ GET    /rest/coordinates/coords                @controllers.GeoCoordController.l
 
 # Locations
 GET    /rest/locations                         @controllers.NamedLocationsController.listLocations
+POST   /rest/locations                         @controllers.NamedLocationsController.addLocation
 PUT    /rest/locations/:id                     @controllers.NamedLocationsController.update(id: Long)
 DELETE /rest/locations/:id                     @controllers.NamedLocationsController.delete(id: Long)
 

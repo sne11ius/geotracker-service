@@ -1,9 +1,19 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<polymer-element name="geotracker-calendar" attributes="">
+<polymer-element name="geotracker-calendar" attributes="baseUrl">
   <template>
     <link rel="stylesheet" href="geotracker-calendar.css">
     <geotracker-globals id="globals"></geotracker-globals>
+    <core-ajax
+      id="add"
+      method="POST"
+      contentType = "application/json"
+      body="{{locationAsJson}}"
+      url="{{baseUrl}}/rest/locations"
+      on-core-response="{{handleAddLocationResponse}}"
+      on-core-error="{{handleAddLocationError}}">
+    >
+    </core-ajax>
     <core-header-panel flex>
       <core-toolbar>
         <paper-tabs selected="{{selected}}" noink>
@@ -11,20 +21,21 @@
           <paper-tab>Locations</paper-tab>
         </paper-tabs>
       </core-toolbar>
-      <template if="{{0 == selected}}">
-        <div id="calendar"></div>
-      </template>
-      <template if="{{1 == selected}}">
-      <geotracker-location-list baseUrl="/mit/geotracker-service"></geotracker-location-list>
-      </template>
+      <div id="calendar" hidden?="{{0 != selected}}"></div>
+      <geotracker-location-list hidden?="{{1 != selected}}" id="locations" baseUrl="/mit/geotracker-service"></geotracker-location-list>
     </core-header-panel>
-    <template if="{{1 == selected}}">
-      <paper-fab id="add-location-button" icon="add" on-click="{{addLocationClicked}}"></paper-fab>
-    </template>
+    <paper-fab hidden?="{{1 != selected}}" id="add-location-button" icon="add" on-click="{{addLocationClicked}}"></paper-fab>
   </template>
   <script>
     (function () {
       Polymer({
+        get locationAsJson() {
+          if (!this.location) {
+            return '';
+          } else {
+            return JSON.stringify(this.location);
+          }
+        },
         selected: 0,
         selectedChanged: function() {
           $(this.$.calendar).fullCalendar('render');
@@ -40,14 +51,13 @@
             allDaySlot: false,
             defaultView: 'agendaWeek'
           });
-          window.setTimeout(function() {
+          this.async(function() {
             $(this.$.calendar).fullCalendar('render');
-          }, 500);
+          });
         },
         addLocationClicked: function() {
-          this.$.globals.locationEditor._this = this;
-          this.$.globals.locationEditor.addEventListener('save', this.saveLocationClicked);
-          this.$.globals.locationEditor.addEventListener('close', this.locationEditorClosed);
+          console.log('addLocationClicked');
+          this.$.globals.locationEditor.bind(this);
           this.$.globals.locationEditor.reset();
           this.$.globals.locationEditor.open();
         },
@@ -67,14 +77,20 @@
             return;
           } else {
             console.log('now posting location...');
+            _this.location = location;
+            _this.$.add.go();
             _this.$.globals.locationEditor.close();
+            _this.location.name = '';
           }
         },
         locationEditorClosed: function() {
           console.log('dialog closed');
-          this.removeEventListener('save', this._this.saveLocationClicked);
-          this.removeEventListener('close', this._this.locationEditorClosed);
-          this._this = undefined;
+          this.unbind(this._this);
+        },
+        handleAddLocationResponse: function(evt, resp) {
+          this.$.locations.reload();
+        },
+        handleAddLocationError: function(evt, err) {
         }
       });
     })();

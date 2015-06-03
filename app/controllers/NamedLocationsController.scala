@@ -31,22 +31,45 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
     }
   }
 
-  def listLocations = SecuredAction.async { implicit request =>
-    val locations = namedLocationsService.loadLocations(request.identity)
-    Future.successful(Ok(Json.toJson(locations)))
-  }
-
   // Using argonaut
   implicit def DecodeGeoCoord: DecodeJson[NamedLocation] =
     DecodeJson(c => for {
-      id <- (c --\ "id").as[Long]
+      id <- (c --\ "id").as[Option[Long]]
       name <- (c --\ "name").as[String]
       latitude <- (c --\ "latitude").as[Double]
       longitude <- (c --\ "longitude").as[Double]
       radius <- (c --\ "radius").as[Float]
     } yield NamedLocation(
-      Some(id), name, latitude, longitude, radius
+      id, name, latitude, longitude, radius
     ))
+
+  def listLocations = SecuredAction.async { implicit request =>
+    val locations = namedLocationsService.loadLocations(request.identity)
+    Future.successful(Ok(Json.toJson(locations)))
+  }
+
+  def addLocation = SecuredAction.async { implicit request =>
+    request.body.asJson match {
+      case Some(text) => {
+        val option: Option[NamedLocation] = Parse.decodeOption[NamedLocation](text.toString())
+        Parse.decodeOption[NamedLocation](text.toString()) match {
+          case Some(location) => {
+            Logger.debug(s"location: $location")
+            namedLocationsService.addLocation(location, request.identity);
+            Future.successful(Ok)
+          }
+          case _ => {
+            Logger.debug("Could not parse shit D:")
+            Future.successful(BadRequest)
+          }
+        }
+      }
+      case _ => {
+        Logger.debug("Could not body as text D:")
+        Future.successful(BadRequest)
+      }
+    }
+  }
 
   def update(id: Long) = SecuredAction.async { implicit request =>
     Logger.debug(s"Update by id: $id")
@@ -58,6 +81,7 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
             Parse.decodeOption[NamedLocation](text.toString()) match {
               case Some(location) => {
                 Logger.debug(s"location: $location")
+                namedLocationsService.updateLocation(location, request.identity);
                 Future.successful(Ok)
               }
               case _ => {

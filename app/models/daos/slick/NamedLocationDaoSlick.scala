@@ -11,6 +11,7 @@ import models.daos.NamedLocationDao
 import models.NamedLocation
 import models.daos.slick.NamedLocationSlickDB.DBNamedLocation
 import org.joda.time.Interval
+import models.daos.slick.NamedLocationSlickDB.DBNamedLocation
 
 class NamedLocationDaoSlick @Inject() () extends NamedLocationDao {
 
@@ -20,6 +21,12 @@ class NamedLocationDaoSlick @Inject() () extends NamedLocationDao {
   override def addLocation(l: NamedLocation, user: User) = {
     DB withSession { implicit session =>
       slickNamedLocations += DBNamedLocation(None, user.userID.toString, l.name, l.latitude, l.longitude, l.radius)
+    }
+  }
+
+  override def updateLocation(l: NamedLocation, user: User) = {
+    DB withSession { implicit session =>
+      slickNamedLocations.filter{ _.id === l.id }.update(DBNamedLocation(l.id, user.userID.toString, l.name, l.latitude, l.longitude, l.radius))
     }
   }
 

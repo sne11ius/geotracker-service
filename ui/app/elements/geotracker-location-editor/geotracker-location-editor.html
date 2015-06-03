@@ -4,11 +4,11 @@
   <template>
     <link rel="stylesheet" href="geotracker-location-editor.css">
     
-    <paper-action-dialog id="editLocationDialog" heading="Create location" backdrop on-core-overlay-open={{dialogStateChanged}} closeSelector="[dismissive]">
+    <paper-action-dialog id="editLocationDialog" heading="Edit location" backdrop on-core-overlay-open={{dialogStateChanged}} closeSelector="[dismissive]">
       <paper-input id="nameInput" label="Name" class="fullWidth" value="{{location.name}}"></paper-input>
       <div id="locationMap"></div>
       <paper-button dismissive>Cancel</paper-button>
-      <paper-button affirmative autofocus on-click="{{saveLocationClicked}}">Create</paper-button>
+      <paper-button affirmative autofocus on-click="{{saveLocationClicked}}">Save</paper-button>
     </paper-action-dialog>
   </template>
   <script>
@@ -24,6 +24,56 @@
           };
       Polymer({
         location: DEFAULT_LOCATION,
+        bind: function(client) {
+          this._this = client;
+          if (!client.saveLocationClicked || 'function' !== typeof client.saveLocationClicked) {
+            console.warn('Client has no saveLocationClicked method.');
+          } else {
+            this.addEventListener('save', client.saveLocationClicked)
+          }
+          if (!client.locationEditorClosed || 'function' !== typeof client.locationEditorClosed) {
+            console.warn('Client has no locationEditorClosed method.');
+          } else {
+            this.addEventListener('close', client.locationEditorClosed)
+          }
+          if (client.location && 'object' === typeof client.location) {
+            this.location = client.location;
+            if (!this.map) {
+              console.error('no map');
+            }
+            if (!this.circle) {
+              console.error('no circle');
+            }
+            var _this = this;
+            var updateMap = function() {
+              var center = new google.maps.LatLng(_this.location.latitude, _this.location.longitude);
+              _this.map.setCenter(center);
+              _this.map.setZoom(13);
+              _this.circle.setCenter(center);
+              _this.circle.setRadius(_this.location.radius);
+            }
+            if (this.map && this.circle) {
+              updateMap();
+            } else {
+              this.afterInit = updateMap;
+            }
+          }
+        },
+        locationChanged: function() {
+          console.log('location changed');
+          if (this.map && this.circle) {
+            var center = new google.maps.LatLng(this.location.latitude, this.location.longitude);
+            this.map.setCenter(center);
+            this.map.setZoom(13);
+            this.circle.setCenter(center);
+            this.circle.setRadius(this.location.radius);
+          }
+        },
+        unbind: function(client) {
+          this.removeEventListener('save', this._this.saveLocationClicked);
+          this.removeEventListener('close', this._this.locationEditorClosed);
+          this._this = undefined;
+        },
         reset: function() {
           this.location = DEFAULT_LOCATION;
         },
@@ -38,6 +88,7 @@
           var opened = event && event.detail;
           if (opened) {
             var div = this.$.locationMap;
+            console.log(this);
             var _this = this;
             this.async(function() {
               var mapOptions = {
@@ -45,6 +96,7 @@
                 center: new google.maps.LatLng(this.location.latitude, this.location.longitude)
               };
               if ('undefined' === typeof this.map) {
+                console.log('initialize map')
                 this.map = new google.maps.Map(div, mapOptions);
                 this.circle = new google.maps.Circle({
                   map: this.map,
@@ -64,6 +116,11 @@
                   _this.location.latitude = _this.circle.getCenter().lat();
                   _this.location.longitude = _this.circle.getCenter().lng();
                 });
+                if (this.afterInit) {
+                  console.log('now calling afterInit')
+                  this.afterInit();
+                  this.afterInit = undefined;
+                }
               }
               if (this.location.latitude === DEFAULT_LAT && this.location.longitude === DEFAULT_LNG && this.location.radius === DEFAULT_RADIUS) {
                 if ('geolocation' in navigator) {
