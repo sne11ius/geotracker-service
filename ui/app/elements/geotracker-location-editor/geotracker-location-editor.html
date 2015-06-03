@@ -38,12 +38,6 @@
           }
           if (client.location && 'object' === typeof client.location) {
             this.location = client.location;
-            if (!this.map) {
-              console.error('no map');
-            }
-            if (!this.circle) {
-              console.error('no circle');
-            }
             var _this = this;
             var updateMap = function() {
               var center = new google.maps.LatLng(_this.location.latitude, _this.location.longitude);

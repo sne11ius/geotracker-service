@@ -44,9 +44,6 @@
             return JSON.stringify(this.location);
           }
         },
-        attached: function() {
-          console.log('attached');
-        },
         locationChanged: function() {
           console.log('location changed');
           var center = new google.maps.LatLng(this.location.latitude, this.location.longitude);

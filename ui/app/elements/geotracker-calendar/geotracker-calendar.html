@@ -38,7 +38,12 @@
         },
         selected: 0,
         selectedChanged: function() {
+          console.log('selected changed');
           $(this.$.calendar).fullCalendar('render');
+       	  // Create the event.
+          var event = document.createEvent('Event');
+          event.initEvent('calendar-tab-changed', true, true);
+          document.dispatchEvent(event);
         },
         isInvalid: function(value) { return false; },
         attached: function() {

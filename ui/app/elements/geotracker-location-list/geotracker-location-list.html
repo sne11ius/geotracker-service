@@ -20,6 +20,16 @@
     (function () {
       Polymer({
         locations: [],
+        initialized: false,
+        attached: function() {
+          var _this = this;
+          document.addEventListener('calendar-tab-changed', function(event) {
+            if (!_this.initialized) {
+              _this.reload();
+              _this.initialized = true;
+            }
+          });
+        },
         handleLocationsResponse: function(evt, resp) {
           this.locations = resp.response;
         },

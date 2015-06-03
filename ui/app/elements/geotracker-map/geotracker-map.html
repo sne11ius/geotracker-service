@@ -80,6 +80,12 @@
             zoom: 6,
           };
           this.map = new google.maps.Map(this.$.map, mapOptions);
+          var _this = this;
+          document.addEventListener('core-animated-pages-transition-prepare', function(event) {
+            google.maps.event.trigger(_this.map, 'resize');
+            var center = new google.maps.LatLng(_this.latest.latitude, _this.latest.longitude);
+            _this.map.setCenter(center);
+          });
         },
         handleLatestResponse: function(event, response) {
           this.latest = response.response;
