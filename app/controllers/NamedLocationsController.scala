@@ -16,6 +16,7 @@ import play.api.libs.json._
 import play.api.libs.json.Json
 import models.NamedLocation
 import argonaut._
+import org.joda.time.DateTime
 
 class NamedLocationsController @Inject() (implicit val env: Environment[User, SessionAuthenticator], val namedLocationsService: NamedLocationService, geoCoordService: GeoCoordService) extends Silhouette[User, SessionAuthenticator] {
 
@@ -112,6 +113,23 @@ class NamedLocationsController @Inject() (implicit val env: Environment[User, Se
       case _ => {}
     }
     Future.successful(NoContent)
+  }
+
+  def fullCalendarEvents(tsBegin: Long, tsEnd: Long) = SecuredAction.async { implicit request =>
+    val begin = new DateTime(tsBegin)
+    val end = new DateTime(tsEnd)
+    val events = namedLocationsService.loadLocations(request.identity).flatMap { l =>
+      geoCoordService.findMatchingIntervals(request.identity, l, new Interval(begin, end)).map { i =>
+        Json.obj(
+          "title" -> JsString(l.name),
+          "allDay" -> JsBoolean(false),
+          "editable" -> JsBoolean(false),
+          "start" -> JsString(i.getStart.toString),
+          "end" -> JsString(i.getEnd.toString)
+        )
+      }
+    }
+    Future.successful(Ok(Json.toJson(events)))
   }
 
   //def details(locationId: Long) = SecuredAction.async { implicit request =>

@@ -14,14 +14,14 @@
       on-core-error="{{handleAddLocationError}}">
     >
     </core-ajax>
-    <core-header-panel flex>
+    <core-header-panel fit>
       <core-toolbar>
         <paper-tabs selected="{{selected}}" noink>
           <paper-tab>Calendar</paper-tab>
           <paper-tab>Locations</paper-tab>
         </paper-tabs>
       </core-toolbar>
-      <div id="calendar" hidden?="{{0 != selected}}"></div>
+      <iframe fit id="calendar" hidden?="{{0 != selected}}" src="/mit/geotracker-service/calendar"></iframe>
       <geotracker-location-list hidden?="{{1 != selected}}" id="locations" baseUrl="/mit/geotracker-service"></geotracker-location-list>
     </core-header-panel>
     <paper-fab hidden?="{{1 != selected}}" id="add-location-button" icon="add" on-click="{{addLocationClicked}}"></paper-fab>
@@ -38,30 +38,11 @@
         },
         selected: 0,
         selectedChanged: function() {
-          console.log('selected changed');
-          $(this.$.calendar).fullCalendar('render');
-       	  // Create the event.
           var event = document.createEvent('Event');
           event.initEvent('calendar-tab-changed', true, true);
           document.dispatchEvent(event);
         },
-        isInvalid: function(value) { return false; },
-        attached: function() {
-          $(this.$.calendar).fullCalendar({
-            header: {
-              left: 'prev,next today',
-              center: 'title',
-              right: 'month,agendaWeek,agendaDay',
-            },
-            allDaySlot: false,
-            defaultView: 'agendaWeek'
-          });
-          this.async(function() {
-            $(this.$.calendar).fullCalendar('render');
-          });
-        },
         addLocationClicked: function() {
-          console.log('addLocationClicked');
           this.$.globals.locationEditor.bind(this);
           this.$.globals.locationEditor.reset();
           this.$.globals.locationEditor.open();
@@ -70,10 +51,8 @@
           console.log('oncompleted');
         },
         saveLocationClicked: function() {
-          console.log('User clicked save');
           var _this = this._this;
           var location = _this.$.globals.locationEditor.location;
-          console.log(location);
           if ('' === location.name) {
             var toast = document.createElement('paper-toast');
             toast.setAttribute('text', 'A location name is required.');
@@ -81,7 +60,6 @@
             toast.show();
             return;
           } else {
-            console.log('now posting location...');
             _this.location = location;
             _this.$.add.go();
             _this.$.globals.locationEditor.close();
@@ -89,7 +67,6 @@
           }
         },
         locationEditorClosed: function() {
-          console.log('dialog closed');
           this.unbind(this._this);
         },
         handleAddLocationResponse: function(evt, resp) {
