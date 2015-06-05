@@ -12,8 +12,12 @@ trait NamedLocationService {
 
   def addLocation(location: NamedLocation, user: User)
 
+  def updateLocation(location: NamedLocation, user: User)
+
   def loadLocations(user: User): List[NamedLocation]
 
   def find(user: User, locationId: Long): Option[NamedLocation]
+
+  def delete(location: NamedLocation)
 
 }

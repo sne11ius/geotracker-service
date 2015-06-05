@@ -21,8 +21,12 @@ import argonaut._
 import play.api.mvc.Request
 import play.api.mvc.AnyContent
 import play.api.mvc.Results
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import org.joda.time.Interval
 
-class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extends Controller {
+class GeoCoordController @Inject() (implicit val env: Environment[User, SessionAuthenticator], val geoCoordService: GeoCoordService)
+  extends Silhouette[User, SessionAuthenticator] {
 
   // Using argonaut
   implicit def DecodeGeoCoord: DecodeJson[GeoCoord] =
@@ -134,15 +138,45 @@ class GeoCoordController @Inject() (val geoCoordService: GeoCoordService) extend
     }
   }
 
-  def loadLatest = Action { implicit request =>
-    val apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } )
+  def loadCoords(begin: Option[Long], end: Option[Long]) = SecuredAction { implicit request =>
+    Logger.debug("loadCoords")
+    Logger.debug(s"begin: $begin")
+    Logger.debug(s"end: $end")
+    val finalBegin = begin match {
+      case Some(ts) => new DateTime(ts)
+      case _ => new DateTime().withMillisOfDay(0)
+    }
+    val finalEnd = end match {
+      case Some(ts) => new DateTime(ts)
+      case _ => new DateTime()
+                      .withMillisOfSecond(999)
+                      .withSecondOfMinute(59)
+                      .withMinuteOfHour(59)
+                      .withHourOfDay(23)
+    }
+    if (!finalEnd.isAfter(finalBegin)) {
+      BadRequest
+    } else {
+      val coords = geoCoordService.load(request.identity, new Interval(finalBegin, finalEnd))
+      Ok(Json.toJson(coords))
+    }
+  }
+
+  def loadLatest = UserAwareAction { implicit request =>
+    var apiKey = Form("apiKey" -> text).bindFromRequest.fold( hasErrors => { "" }, value => { value } )
+    if ("" == apiKey) {
+      apiKey = request.identity match {
+        case Some(user) => {
+          user.apiKey.toString
+        }
+        case _ => ""
+      }
+    }
     if ("" == apiKey) {
       Logger.debug("No api key")
       Unauthorized
     } else {
       val coord = geoCoordService.loadLatest(UUID.fromString(apiKey))
-      Logger.debug(s"Api key: $apiKey")
-      Logger.debug(s"Latest: $coord")
       Ok(Json.toJson(coord))
     }
   }

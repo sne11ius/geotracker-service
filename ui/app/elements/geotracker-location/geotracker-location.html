@@ -1,0 +1,132 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-location" attributes="location, baseUrl">
+  <template>
+    <link rel="stylesheet" href="geotracker-location.css">
+    <geotracker-globals id="globals"></geotracker-globals>
+    <core-ajax
+      id="remove"
+      method="DELETE"
+      url="{{baseUrl}}/rest/locations/{{location.id}}"
+      on-core-response="{{handleLocationDeleteResponse}}"
+      on-core-error="{{handleLocationDeleteError}}">
+    >
+    </core-ajax>
+    <core-ajax
+      id="update"
+      method="PUT"
+      contentType = "application/json"
+      body="{{locationAsJson}}"
+      url="{{baseUrl}}/rest/locations/{{location.id}}"
+      on-core-response="{{handleLocationUpdateResponse}}"
+      on-core-error="{{handleLocationUpdateError}}">
+    >
+    </core-ajax>
+    <core-header-panel flex>
+      <core-toolbar>
+        <core-icon icon="communication:location-on"></core-icon>
+        <div flex>
+          <div class="name">{{location.name}}</div>
+        </div>
+        <paper-icon-button icon="settings" on-click="{{editLocation}}"></paper-icon-button>
+        <paper-icon-button icon="delete" on-click="{{deleteLocation}}"></paper-icon-button>
+      </core-toolbar>
+      <div id="map"></div>
+    </core-header-panel>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        get locationAsJson() {
+          if (!this.location) {
+            return '';
+          } else {
+            return JSON.stringify(this.location);
+          }
+        },
+        locationChanged: function() {
+          console.log('location changed');
+          var center = new google.maps.LatLng(this.location.latitude, this.location.longitude);
+          var mapOptions = {
+            zoom: 10,
+            center: center,
+            disableDefaultUI: true,
+            scrollwheel: true,
+            draggable: false
+          };
+          this.map = new google.maps.Map(this.$.map, mapOptions);
+          this.marker = new google.maps.Marker({
+            position: center,
+            map: this.map,
+            title: this.location.name
+          });
+          this.circle = new google.maps.Circle({
+            strokeColor: '#03a9f4',
+            strokeWeight: 1,
+            fillColor: '#03a9f4',
+            fillOpacity: .1,
+            map: this.map,
+            center: center,
+            radius: this.location.radius
+          });
+          this.map.fitBounds(this.circle.getBounds());
+          var _this = this;
+          google.maps.event.addDomListener(window, 'resize', function() {
+            _this.map.setCenter(center);
+          });
+          google.maps.event.addListener(this.map,'zoom_changed',function () {
+            _this.map.setCenter(center);
+          })
+        },
+        editLocation: function() {
+          console.log('editing location ' + this.location.name);
+          this.$.globals.locationEditor.open();
+          this.$.globals.locationEditor.bind(this);
+        },
+        saveLocationClicked: function() {
+          console.log('User clicked save');
+          var _this = this._this;
+          var location = _this.$.globals.locationEditor.location;
+          console.log(location);
+          if ('' === location.name) {
+            var toast = document.createElement('paper-toast');
+            toast.setAttribute('text', 'A location name is required.');
+            document.body.appendChild(toast);
+            toast.show();
+            return;
+          } else {
+            _this.$.globals.locationEditor.close();
+            console.log('now updating location...');
+            _this.$.update.go();
+            var center = new google.maps.LatLng(_this.location.latitude, _this.location.longitude);
+            _this.map.setCenter(center);
+            _this.circle.setCenter(center);
+            _this.circle.setRadius(_this.location.radius);
+            _this.map.fitBounds(_this.circle.getBounds());
+          }
+        },
+        locationEditorClosed: function() {
+          console.log('dialog closed');
+          this.unbind(this._this);
+        },
+        deleteLocation: function() {
+          console.log('delete clicked');
+          this.$.remove.go();
+        },
+        handleLocationDeleteResponse: function(evt, resp) {
+          console.log('handleLocationDeleteResponse');
+          this.fire('removed');
+        },
+        handleLocationDeleteError: function(evt, err) {
+          console.log('handleLocationDeleteError');
+        },
+        handleLocationUpdateResponse: function(evt, resp) {
+          console.log('location updated');
+        },
+        handleLocationUpdateError: function(evt, err) {
+          console.error('could not update location');
+        }
+      });
+    })();
+  </script>
+</polymer-element>

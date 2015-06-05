@@ -17,3 +17,5 @@ dist
 .cache
 activator*
 build.properties
+/.scalastyle
+/.cache-main

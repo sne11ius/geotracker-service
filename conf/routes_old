@@ -1,0 +1,24 @@
+GET    /ui                                com.tuplejump.playYeoman.Yeoman.index
+GET    /                                  com.tuplejump.playYeoman.Yeoman.redirectRoot(base="/mit/geotracker-service/ui")
+
+#GET    /index                             @controllers.ApplicationController.index
+#GET    /about                             @controllers.ApplicationController.about
+#
+#POST   /coordinates                       @controllers.GeoCoordController.postCoords
+#POST   /coordinates/latest                @controllers.GeoCoordController.loadLatest
+#
+#GET    /locations                         @controllers.NamedLocationsController.listLocations
+#GET    /locations/details/:locationId     @controllers.NamedLocationsController.details(locationId: Long)
+#GET    /locations/create                  @controllers.NamedLocationsController.create
+#POST   /locations/created                 @controllers.NamedLocationsController.created
+#
+#GET    /signIn                            @controllers.ApplicationController.signIn
+#GET    /signUp                            @controllers.ApplicationController.signUp
+#GET    /signOut                           @controllers.ApplicationController.signOut
+#POST   /authenticate/credentials          @controllers.CredentialsAuthController.authenticate
+#POST   /signUp                            @controllers.SignUpController.signUp
+
+#GET    /assets/*file                      controllers.Assets.at(path="/public", file)
+#GET    /webjars/*file                     controllers.WebJarAssets.at(file)
+
+->     /                                  yeoman.Routes

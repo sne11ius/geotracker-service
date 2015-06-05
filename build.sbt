@@ -1,4 +1,6 @@
+import com.tuplejump.sbt.yeoman.Yeoman
 import com.atlassian.labs.gitstamp.GitStampPlugin._
+import play.PlayImport.PlayKeys.playRunHooks
 
 Seq( gitStampSettings: _* )
 
@@ -14,11 +16,14 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 
 resolvers += "JBoss repository" at "https://repository.jboss.org/nexus/content/repositories/"
 
+Yeoman.yeomanSettings
+
+Yeoman.forceGrunt := false
+
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick" % "0.8.1",
   "mysql" % "mysql-connector-java" % "5.1.32",
   "com.mohiva" %% "play-silhouette" % "2.0",
-  "com.mohiva" %% "play-html-compressor" % "0.4-SNAPSHOT",
   "org.webjars" %% "webjars-play" % "2.3.0",
   "org.webjars" % "bootstrap" % "3.1.1",
   "org.webjars" % "jquery" % "1.11.0",
@@ -42,5 +47,6 @@ scalacOptions ++= Seq(
   "-Ywarn-dead-code", // Warn when dead code is identified.
   "-Ywarn-inaccessible", // Warn about inaccessible types in method signatures.
   "-Ywarn-nullary-override", // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
-  "-Ywarn-numeric-widen" // Warn when numerics are widened.
+  "-Ywarn-numeric-widen", // Warn when numerics are widened.
+  "-language:reflectiveCalls"
 )

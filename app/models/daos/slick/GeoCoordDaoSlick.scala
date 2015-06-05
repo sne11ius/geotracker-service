@@ -88,6 +88,27 @@ class GeoCoordDaoSlick @Inject() (userDao: UserDao) extends GeoCoordDao {
     }
   }
 
+  override def load(user: User, interval: Interval): List[GeoCoord] = {
+    DB withSession { implicit session =>
+      val begin = interval.getStartMillis
+      val end = interval.getEndMillis
+      slickGeoCoords.filter(_.userId === user.userID.toString).sortBy(_.time.desc).filter(
+        c => c.time >= begin && c.time <= end
+      ).list.map { c =>
+        GeoCoord(
+          c.id,
+          user.userID,
+          c.latitude,
+          c.longitude,
+          c.altitude,
+          c.accuracy,
+          c.speed,
+          new DateTime(c.time)
+        )
+      }
+    }
+  }
+
   // http://stackoverflow.com/questions/120283/how-can-i-measure-distance-and-create-a-bounding-box-based-on-two-latitudelongi
   def dist(location: NamedLocation, coord: GeoCoord): Double = {
     val earthRadius = 6371.0

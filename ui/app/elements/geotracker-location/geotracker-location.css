@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  height: 300px;
+  font-size: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+:host core-header-panel {
+	height: 100%;
+}
+
+:host core-header-panel /deep/ #mainContainer {
+	overflow: hidden;
+}
+
+:host #map {
+	height: 265px;
+	overflow: hidden;
+}

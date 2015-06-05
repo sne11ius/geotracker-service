@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-login-control" attributes="baseUrl user">
+  <template>
+    <link rel="stylesheet" href="geotracker-login-control.css">
+    
+    <core-ajax
+      auto
+      url="{{baseUrl}}"
+      handleAs="json"
+      on-core-response="{{handleResponse}}"
+      on-core-error="{{handleError}}">
+    </core-ajax>
+    
+    <div horizontal layout>
+      <template if="{{authenticated}}">
+        <a href="/mit/geotracker-service/signOut">
+          <paper-button on-click="{{logoutClicked}}" id="logout-button">
+            <core-icon icon="social:person"></core-icon>
+            <span class="label">Logout</span>
+          </paper-button>
+        </a>
+      </template>
+      <template if="{{!authenticated}}">
+        <paper-button on-click="{{loginClicked}}">
+          <core-icon icon="social:person"></core-icon>
+          <span class="label">Login</span>
+        </paper-button>
+      </template>
+    </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        authenticated: false,
+        created: function() {
+          //console.log(this.getAttribute('baseUrl'));
+        },
+        loginClicked: function() {
+          console.log('loginClicked');
+        },
+        logoutClicked: function() {
+          console.log('logoutClicked');
+        },
+        handleResponse: function(event, response) {
+          this.user = response.response;
+          this.authenticated = true;
+        },
+        handleError: function(event, error) {
+          console.log('got error');
+          this.authenticated = false;
+          window.location.hash = '';
+          window.location.pathname = '/mit/geotracker-service';
+        }
+      });
+    })();
+  </script>
+</polymer-element>

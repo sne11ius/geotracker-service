@@ -1,0 +1,19 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-globals" attributes="">
+  <template>
+  </template>
+  <script>
+    (function () {
+      console.log('creating');
+      var locationEditor = document.createElement('geotracker-location-editor');
+      window.addEventListener('polymer-ready', function(e) {
+        console.log('appending');
+        document.body.appendChild(locationEditor);
+      });
+      Polymer({
+        locationEditor: locationEditor
+      });
+    })();
+  </script>
+</polymer-element>

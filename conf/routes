@@ -1,19 +1,31 @@
-GET    /                                  @controllers.ApplicationController.index
-GET    /about                             @controllers.ApplicationController.about
+GET    /                                       @controllers.ApplicationController.index                           
+#com.tuplejump.playYeoman.Yeoman.redirectRoot(base="/mit/geotracker-service/ui/")
+GET    /user                                   @controllers.ApplicationController.user
+# Map static resources from the /public folder to the /assets URL path
+GET    /assets/*file                           controllers.Assets.at(path="/public", file)
+GET    /ui                                     com.tuplejump.playYeoman.Yeoman.index
 
-POST   /coordinates                       @controllers.GeoCoordController.postCoords
-POST   /coordinates/latest                @controllers.GeoCoordController.loadLatest
+# Coords
+POST   /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
+GET    /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
+GET    /rest/coordinates/coords                @controllers.GeoCoordController.loadCoords(begin: Option[Long], end: Option[Long])
 
-GET    /locations                         @controllers.NamedLocationsController.listLocations
-GET    /locations/details/:locationId     @controllers.NamedLocationsController.details(locationId: Long)
-GET    /locations/create                  @controllers.NamedLocationsController.create
-POST   /locations/created                 @controllers.NamedLocationsController.created
+# Locations
+GET    /rest/locations                         @controllers.NamedLocationsController.listLocations
+POST   /rest/locations                         @controllers.NamedLocationsController.addLocation
+PUT    /rest/locations/:id                     @controllers.NamedLocationsController.update(id: Long)
+DELETE /rest/locations/:id                     @controllers.NamedLocationsController.delete(id: Long)
 
-GET    /signIn                            @controllers.ApplicationController.signIn
-GET    /signUp                            @controllers.ApplicationController.signUp
-GET    /signOut                           @controllers.ApplicationController.signOut
-POST   /authenticate/credentials          @controllers.CredentialsAuthController.authenticate
-POST   /signUp                            @controllers.SignUpController.signUp
+# Calendar data
+GET    /rest/fullCalendarEvents                @controllers.NamedLocationsController.fullCalendarEvents(from: Long, to: Long)
 
-GET    /assets/*file                      controllers.Assets.at(path="/public", file)
-GET    /webjars/*file                     controllers.WebJarAssets.at(file)
+# Login
+GET    /signIn                                 @controllers.ApplicationController.signIn
+GET    /signOut                                @controllers.ApplicationController.signOut
+POST   /signUp                                 @controllers.SignUpController.signUp
+GET    /signUp                                 @controllers.SignUpController.signUp
+POST   /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
+
+GET    /calendar                               @controllers.CalendarController.calendar
+
+->     /ui/                                    yeoman.Routes

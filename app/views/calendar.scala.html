@@ -1,0 +1,73 @@
+@()
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="/mit/geotracker-service/ui/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/mit/geotracker-service/ui/bower_components/moment/min/moment-with-locales.min.js"></script>
+    <script src="/mit/geotracker-service/ui/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+    <link rel="stylesheet" href="/mit/geotracker-service/ui/bower_components/fullcalendar/dist/fullcalendar.min.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif !important;
+        font-weight: normal !important;
+        border-radius: 0 !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+      #calendar {
+        width: 100%;
+      }
+      .fc-toolbar {
+        padding: 5px;
+        padding-top: 10px;
+        background-color: #03a9f4;
+      }
+      button {
+        background-image: none !important;
+        background-color: #03a9f4 !important;
+        color: white !important;
+      }
+      button.fc-state-active {
+        background-color: #5bc7f8 !important;
+      }
+      .fc-event {
+        background-color: #03a9f4 !important;
+        padding: 3px;
+      }
+      .fc-event * {
+      }
+      h2 {
+        font-size: 1.3em !important;
+        color: white;
+        position: relative;
+        top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="calendar"></div>
+    <script>
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      allDaySlot: false,
+      defaultView: 'agendaWeek',
+      events: function(start, end, timezone, callback) {
+        $.getJSON('/mit/geotracker-service/rest/fullCalendarEvents?from=' + start + '&to=' + end, function(data) {
+          console.log(data);
+          callback(data);
+        });
+      }
+    });
+    </script>
+  </body>
+</html>

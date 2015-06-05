@@ -1,31 +1,35 @@
-@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
+@import models.ManifestInfo
 
-@import com.mohiva.play.silhouette.impl.providers._
-@import views.html.bootstrap._
-@import play.api.Play
-@import play.api.Play.current
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials], manifestInfo: ManifestInfo)(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
 
-@main("Geotracker Service - Sign In") {
+@main("Geotracker Service - Sign In", manifestInfo) {
+  <div class="login-form" layout horizontal center-center fit>
     @request.flash.get("error").map { msg =>
-        <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <strong>Error!</strong> @msg
-        </div>
+      <div class="error">
+        @msg
+      </div>
     }
-    <fieldset class="col-md-6 col-md-offset-3">
-        <legend>Sign in with your credentials</legend>
-        @helper.form(action = routes.CredentialsAuthController.authenticate()) {
-            @text(signInForm("identifier"), "Email", icon = "at")
-            @password(signInForm("password"), "Password", icon = "key")
-            <div class="form-group">
-                <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
-                </div>
-            </div>
-        }
-
-        <div>
-            <p class="not-a-member">Not a member? <a href="@routes.ApplicationController.signUp">Sign up now</a></p>
-        </div>
-    </fieldset>
+    <form action="@routes.CredentialsAuthController.authenticate()" method="post">
+      <paper-input-decorator floatingLabel label="email" type="email">
+        <input is="core-input" name="identifier" type="email" required>
+      </paper-input-decorator>
+      <paper-input-decorator floatingLabel label="password">
+        <input is="core-input" type="password" name="password" required>
+      </paper-input-decorator>
+      <div horizontal layout>
+        <div flex></div>
+        <paper-button class="colored">
+          <input type="submit" value="Sign In">
+        </paper-button>
+      </div>
+      <div horizontal layout class="sign-up">
+        <div flex></div>
+        <paper-button class="colored">
+          <a href="@routes.SignUpController.signUp">
+            <span class="label">Sign Up</span>
+          </a>
+        </paper-button>
+      </div>
+    </form>
+  </div>
 }

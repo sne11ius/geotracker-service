@@ -1,7 +1,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.api.LoginEvent
@@ -16,8 +15,14 @@ import services.UserService
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
-
 import scala.concurrent.Future
+import play.api.Logger
+
+import com.jcabi.manifests.Manifests
+import models.ManifestInfo
+
+import play.api.data.Form
+import play.api.data.Forms._
 
 /**
  * The credentials auth controller.
@@ -30,6 +35,17 @@ class CredentialsAuthController @Inject() (
   val authInfoService: AuthInfoService)
   extends Silhouette[User, SessionAuthenticator] {
 
+  var manifestInfo = ManifestInfo("branch", "date", "rev")
+  try {
+    manifestInfo = ManifestInfo(
+      Manifests.read("Git-Branch"),
+      Manifests.read("Git-Build-Date"),
+      Manifests.read("Git-Head-Rev")
+    )
+  } catch {
+    case e: Exception => {}
+  }
+
   /**
    * Authenticates a user against the credentials provider.
    *
@@ -37,7 +53,9 @@ class CredentialsAuthController @Inject() (
    */
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.signIn(form))),
+      form => {
+        Future.successful(BadRequest(views.html.signIn(form, manifestInfo)))
+      },
       credentials => (env.providers.get(CredentialsProvider.ID) match {
         case Some(p: CredentialsProvider) => p.authenticate(credentials)
         case _ => Future.failed(new ConfigurationException(s"Cannot find credentials provider"))
@@ -52,6 +70,7 @@ class CredentialsAuthController @Inject() (
         }
       }.recover {
         case e: ProviderException =>
+          Logger.debug("Error: " + Messages("invalid.credentials"))
           Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("invalid.credentials"))
       }
     )

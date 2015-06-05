@@ -1,0 +1,123 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="geotracker-map" attributes="baseUrl">
+  <template>
+    <link rel="stylesheet" href="geotracker-map.css">
+    <core-ajax
+      id="latest"
+      auto
+      handleAs="json"
+      url="{{baseUrl}}/rest/coordinates/latest?begin={{beginDateAsTs}}&end={{endDateAsTs}}"
+      on-core-response="{{handleLatestResponse}}"
+      on-core-error="{{handleLatestError}}">
+    ></core-ajax>
+    <core-ajax
+      id="locations"
+      auto
+      handleAs="json"
+      url="{{baseUrl}}/rest/coordinates/coords?begin={{beginDateAsTs}}&end={{endDateAsTs}}"
+      on-core-response="{{handleCoordsResponse}}"
+      on-core-error="{{handleCoordsError}}">
+    >
+    </core-ajax>
+    <core-toolbar tool flex>
+      <paper-date-picker-dialog id="beginDialog" value={{beginDate}}></paper-date-picker-dialog>
+      <paper-button raised on-click="{{openDateBegin}}">{{beginDate | date('yyyy-MM-dd')}}</paper-button>
+      <span style="margin-right: -9px;">&mdash;</span>
+      <paper-date-picker-dialog id="endDialog" value={{endDate}} dateChanged={{endChanged}}></paper-date-picker-dialog>
+      <paper-button raised on-click="{{openDateEnd}}">{{endDate | date('yyyy-MM-dd')}}</paper-button>
+    </core-toolbar>
+    <div id="map"></div>
+  </template>
+  <script>
+    (function () {
+      var yesterday = function yesterday() {
+        var d = new Date();
+        d.setDate(d.getDate() - 1);
+        d.setMilliseconds(0);
+        d.setSeconds(0);
+        d.setMinutes(0);
+        d.setHours(0);
+        return d;
+      };
+      var endOfDay = function endOfDay() {
+        var d = new Date();
+        d.setMilliseconds(999);
+        d.setSeconds(59);
+        d.setMinutes(59);
+        d.setHours(23);
+        return d;
+      };
+      Polymer({
+        latest: {
+          latitude: 0,
+          longitude: 0
+        },
+        beginDate: yesterday(),
+        endDate: endOfDay(),
+        beginDateChanged: function(date) {
+          this.$.locations.go();
+        },
+        endDateChanged: function(date) {
+          this.$.locations.go();
+        },
+        get beginDateAsTs() {
+          return this.beginDate.getTime();
+        },
+        get endDateAsTs() {
+          return this.endDate.getTime();
+        },
+        openDateBegin: function() {
+          this.$.beginDialog.open();
+        },
+        openDateEnd: function() {
+          this.$.endDialog.open();
+        },
+        attached: function() {
+          var mapOptions = {
+            zoom: 6,
+          };
+          this.map = new google.maps.Map(this.$.map, mapOptions);
+          var _this = this;
+          document.addEventListener('core-animated-pages-transition-prepare', function(event) {
+            google.maps.event.trigger(_this.map, 'resize');
+            var center = new google.maps.LatLng(_this.latest.latitude, _this.latest.longitude);
+            _this.map.setCenter(center);
+          });
+        },
+        handleLatestResponse: function(event, response) {
+          this.latest = response.response;
+          var center = new google.maps.LatLng(this.latest.latitude, this.latest.longitude);
+          this.map.setCenter(center);
+          var marker = new google.maps.Marker({
+            position: center,
+            map: this.map,
+            title: 'You are here'
+          });
+        },
+        handleLatestError: function(event, error) {
+          console.error(error);
+        },
+        handleCoordsResponse: function(event, response) {
+          if ('undefined' !== typeof this.path) {
+            this.path.setMap(null);
+          }
+          var coords = response.response;
+          this.path = new google.maps.Polyline({
+            path: coords.map(function(c) {
+              return new google.maps.LatLng(c.latitude, c.longitude);
+            }),
+            geodesic: true,
+            strokeColor: '#03a9f4',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+          this.path.setMap(this.map);
+        },
+        handleCoordsError: function(event, error) {
+          console.error(error);
+        }, 
+      });
+    })();
+  </script>
+</polymer-element>

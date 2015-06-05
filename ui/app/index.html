@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="A simple geo location app">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>geotracker service</title>
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild-->
+
+  <!-- build:js bower_components/webcomponentsjs/webcomponents.min.js -->
+  <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+  <!-- endbuild -->
+
+  <!-- will be replaced with elements/elements.vulcanized.html -->
+  <link rel="import" href="elements/elements.html">
+  <!-- endreplace-->
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/moment/min/moment-with-locales.min.js"></script>
+  <script src="bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+  <link rel="stylesheet" href="bower_components/fullcalendar/dist/fullcalendar.min.css">
+</head>
+
+<body unresolved fullbleed>
+  <template is="auto-binding" id="t">
+    <flatiron-director route="{{route}}" autoHash></flatiron-director>
+    <core-scaffold id="scaffold">
+      <nav>
+        <core-toolbar>
+          <span>Geotracker Service</span>
+        </core-toolbar>
+        <core-menu valueattr="hash" selected="{{route}}" on-core-select="{{menuItemSelected}}" selectedModel="{{selectedPage}}">
+          <template repeat="{{page, i in pages}}">
+            <paper-item hash="{{page.hash}}" noink>
+              <core-icon icon="{{page.icon}}"></core-icon>
+              <a href="#{{page.hash}}">{{page.name}}</a>
+            </paper-item>
+          </template>
+        </core-menu>
+      </nav>
+      
+      <core-toolbar tool flex>
+        <div flex>{{selectedPage.page.name}}</div>
+        <geotracker-login-control id="login-control" baseUrl="/mit/geotracker-service/user"></geotracker-login-control>
+      </core-toolbar>
+      
+      <div layout horizontal center-center fit>
+        <core-animated-pages id="pages" valueattr="hash" selected="{{route}}" transitions="slide-from-right">
+          <template repeat="{{page, i in pages}}">
+            <section hash="{{page.hash}}" layout vertical center-center>
+              <geotracker-map hidden?="{{0 != i}}" baseUrl="/mit/geotracker-service"></geotracker-map>
+              <geotracker-calendar hidden?="{{1 != i}}" baseUrl="/mit/geotracker-service"></geotracker-calendar>
+              <template if="{{2 == i}}">
+                No settings yet :D
+              </template>
+            </section>
+          </template>
+        </core-animated-pages>
+      </div>
+    </core-scaffold>
+  </template>
+  <!-- build:js scripts/app.js -->
+  <script src="scripts/app.js"></script>
+  <!-- endbuild-->
+</body>
+
+</html>

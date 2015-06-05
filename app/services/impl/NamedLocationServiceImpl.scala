@@ -14,6 +14,10 @@ class NamedLocationServiceImpl @Inject() (namedLocationDao: NamedLocationDao) ex
     namedLocationDao.addLocation(location, user)
   }
 
+  override def updateLocation(location: NamedLocation, user: User) = {
+    namedLocationDao.updateLocation(location, user)
+  }
+
   override def loadLocations(user: User): List[NamedLocation] = {
     namedLocationDao.loadLocations(user)
   }
@@ -22,4 +26,7 @@ class NamedLocationServiceImpl @Inject() (namedLocationDao: NamedLocationDao) ex
     namedLocationDao.find(user, locationId)
   }
 
+  override def delete(location: NamedLocation) = {
+    namedLocationDao.delete(location)
+  }
 }
