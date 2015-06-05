@@ -9,13 +9,15 @@
   
   template.menuItemSelected = function(e, detail/*, sender*/) {
     if (detail.isSelected) {
-      this.$ && this.$.scaffold.closeDrawer();
+      if (this.$) {
+        this.$.scaffold.closeDrawer();
+      }
     }
   };
   
   var DEFAULT_ROUTE = 'map';
   
-  template.addEventListener('template-bound', function(e) {
+  template.addEventListener('template-bound', function() {
     this.route = this.route || DEFAULT_ROUTE;
   });
 })(wrap(document));
