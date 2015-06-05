@@ -23,9 +23,7 @@
     <core-toolbar tool flex>
       <paper-date-picker-dialog id="beginDialog" value={{beginDate}}></paper-date-picker-dialog>
       <paper-button raised on-click="{{openDateBegin}}">{{beginDate | date('yyyy-MM-dd')}}</paper-button>
-      <div flex></div>
-      <span>&ndash;</span>
-      <div flex></div>
+      <span style="margin-right: -9px;">&mdash;</span>
       <paper-date-picker-dialog id="endDialog" value={{endDate}} dateChanged={{endChanged}}></paper-date-picker-dialog>
       <paper-button raised on-click="{{openDateEnd}}">{{endDate | date('yyyy-MM-dd')}}</paper-button>
     </core-toolbar>
