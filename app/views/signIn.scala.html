@@ -1,6 +1,8 @@
-@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
+@import models.ManifestInfo
 
-@main("Geotracker Service - Sign In") {
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials], manifestInfo: ManifestInfo)(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
+
+@main("Geotracker Service - Sign In", manifestInfo) {
   <div class="login-form" layout horizontal center-center fit>
     @request.flash.get("error").map { msg =>
       <div class="error">

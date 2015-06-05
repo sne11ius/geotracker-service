@@ -18,6 +18,9 @@ import play.api.mvc.Action
 import scala.concurrent.Future
 import play.api.Logger
 
+import com.jcabi.manifests.Manifests
+import models.ManifestInfo
+
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -32,6 +35,17 @@ class CredentialsAuthController @Inject() (
   val authInfoService: AuthInfoService)
   extends Silhouette[User, SessionAuthenticator] {
 
+  var manifestInfo = ManifestInfo("branch", "date", "rev")
+  try {
+    manifestInfo = ManifestInfo(
+      Manifests.read("Git-Branch"),
+      Manifests.read("Git-Build-Date"),
+      Manifests.read("Git-Head-Rev")
+    )
+  } catch {
+    case e: Exception => {}
+  }
+
   /**
    * Authenticates a user against the credentials provider.
    *
@@ -40,7 +54,7 @@ class CredentialsAuthController @Inject() (
   def authenticate = Action.async { implicit request =>
     SignInForm.form.bindFromRequest.fold(
       form => {
-        Future.successful(BadRequest(views.html.signIn(form)))
+        Future.successful(BadRequest(views.html.signIn(form, manifestInfo)))
       },
       credentials => (env.providers.get(CredentialsProvider.ID) match {
         case Some(p: CredentialsProvider) => p.authenticate(credentials)

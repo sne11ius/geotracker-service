@@ -9,9 +9,8 @@ import scala.concurrent.Future
 import services.GeoCoordService
 import play.api.mvc.Action
 import com.jcabi.manifests.Manifests
-import play.api.libs.json.Json
-
 import models.ManifestInfo
+import play.api.libs.json.Json
 
 /**
  * The basic application controller.
@@ -20,6 +19,17 @@ import models.ManifestInfo
  */
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator], geoCoordService: GeoCoordService)
   extends Silhouette[User, SessionAuthenticator] {
+
+  var manifestInfo = ManifestInfo("branch", "date", "rev")
+  try {
+    manifestInfo = ManifestInfo(
+      Manifests.read("Git-Branch"),
+      Manifests.read("Git-Build-Date"),
+      Manifests.read("Git-Head-Rev")
+    )
+  } catch {
+    case e: Exception => {}
+  }
 
   def user = UserAwareAction.async { implicit request =>
     request.identity match {
@@ -38,7 +48,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         Future.successful(Redirect("/mit/geotracker-service/ui"))
       }
       case _ => {
-        Future.successful(Ok(views.html.signIn(SignInForm.form)))
+        Future.successful(Ok(views.html.signIn(SignInForm.form, manifestInfo)))
       }
     }
     //val latest = geoCoordService.loadLatest(request.identity.apiKey)
@@ -62,7 +72,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     def signIn = UserAwareAction.async { implicit request =>
       request.identity match {
         case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-        case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
+        case None => Future.successful(Ok(views.html.signIn(SignInForm.form, manifestInfo)))
       }
     }
 //

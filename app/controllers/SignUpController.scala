@@ -19,6 +19,9 @@ import play.api.i18n.Messages
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
+import com.jcabi.manifests.Manifests
+import models.ManifestInfo
+
 import scala.concurrent.Future
 
 /**
@@ -38,6 +41,17 @@ class SignUpController @Inject() (
   val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
+  var manifestInfo = ManifestInfo("branch", "date", "rev")
+  try {
+    manifestInfo = ManifestInfo(
+      Manifests.read("Git-Branch"),
+      Manifests.read("Git-Build-Date"),
+      Manifests.read("Git-Head-Rev")
+    )
+  } catch {
+    case e: Exception => {}
+  }
+
   /**
    * Registers a new user.
    *
@@ -45,7 +59,7 @@ class SignUpController @Inject() (
    */
   def signUp = Action.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.signUp(form))),
+      form => Future.successful(BadRequest(views.html.signUp(form, manifestInfo))),
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {

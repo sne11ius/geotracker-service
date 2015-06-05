@@ -1,6 +1,6 @@
-@(signInForm: Form[forms.SignUpForm.Data])(implicit request: RequestHeader)
+@(signInForm: Form[forms.SignUpForm.Data], manifestInfo: ManifestInfo)(implicit request: RequestHeader)
 
-@main("Geotracker Service - Sign Up") {
+@main("Geotracker Service - Sign Up", manifestInfo) {
   <div class="login-form" layout horizontal center-center fit>
     @request.flash.get("error").map { msg =>
       <div class="error">

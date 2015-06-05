@@ -1,4 +1,6 @@
-@(title: String)(content: Html)
+@import models.ManifestInfo
+
+@(title: String, manifestInfo: ManifestInfo)(content: Html)
 
 <!doctype html>
 <html>
@@ -84,6 +86,21 @@
     filter: blur(2.5px);
     position: absolute;
   }
+  core-icon-button.about {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1;
+    color: white;
+  }
+  html /deep/ #aboutDialog {
+  }
+  html /deep/ #aboutDialog a {
+    text-decoration: none;
+  }
+  html /deep/ #aboutDialog .contact {
+    margin-right: 30px;
+  }
   </style>
 </head>
 
@@ -91,10 +108,39 @@
   <div class="header">
     @title
   </div>
+  <core-icon-button class="about" icon="help" onclick="aboutClicked();"></core-icon-button>
+  <paper-action-dialog id="aboutDialog">
+    <div layout horizontal>
+      <div class="contact">
+        <h2>Contact</h2>
+        <a href="https://wasis.nu/mit/blog">Blog</a><br>
+        <a href="mailto:cornelius@@wasis.nu">cornelius@@wasis.nu</a><br>
+        <a href="https://plus.google.com/+CorneliusLilge">+CorneliusLilge</a><br>
+        <a href="https://twitter.com/snellius">@@snellius</a><br>
+        <a href="https://www.facebook.com/sne11ius">Facebook</a><br>
+        <iframe src="https://githubbadge.appspot.com/sne11ius?a=0" style="border: 0;height: 142px;width: 200px;overflow: hidden; margin-top: 5px;" frameBorder=0></iframe>
+      </div>
+      <div flex>
+        <h2>About</h2>
+        <p>
+          This is a simple geo tracker web app, powered by <a href="https://github.com/sne11ius/geotracker-service">github.com/sne11ius/geotracker-service</a>.<br>
+        </p>
+        <p>
+          <div style="" class="">Build: <a href="https://github.com/sne11ius/geotracker-service/tree/@manifestInfo.gitBuildHeadRevision">@manifestInfo.gitBuildHeadRevision</a> @@ @manifestInfo.gitBuildDate</div>
+        </p>
+        <code>Is this awesome<br>(Y/N)?</code>
+      </div>
+    </div>
+    <paper-button affirmative>Ok</paper-button>
+  </paper-action-dialog>
   <div id="background-map"></div>
   @content
   <script>
     $(document).ready(function() {
+      window.aboutClicked = function() {
+        console.log('about clicked');
+        document.getElementById('aboutDialog').open();
+      };
       var mapOptions = {
         zoom: 16,
         center: new google.maps.LatLng(52.1575, 4.487778),
