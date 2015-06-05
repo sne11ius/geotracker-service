@@ -119,14 +119,14 @@
   <script>
     $(document).ready(function() {
       var mapOptions = {
-        zoom: 15,
-        center: new google.maps.LatLng(53.106382, 8.770247),
+        zoom: 16,
+        center: new google.maps.LatLng(52.1575, 4.487778),
         disableDefaultUI: true
       };
       var map = new google.maps.Map(document.getElementById('background-map'), mapOptions);
       window.setInterval(function() {
-        map.panBy(2.5, 1);
-      }, 30);
+        map.panBy(2.5, 1.3);
+      }, 25);
     });
   </script>
 </body>
