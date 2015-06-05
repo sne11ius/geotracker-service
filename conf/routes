@@ -22,7 +22,8 @@ GET    /rest/fullCalendarEvents                @controllers.NamedLocationsContro
 # Login
 GET    /signIn                                 @controllers.ApplicationController.signIn
 GET    /signOut                                @controllers.ApplicationController.signOut
-#POST  /signUp                                 @controllers.SignUpController.signUp
+POST   /signUp                                 @controllers.SignUpController.signUp
+GET    /signUp                                 @controllers.SignUpController.signUp
 POST   /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
 
 GET    /calendar                               @controllers.CalendarController.calendar

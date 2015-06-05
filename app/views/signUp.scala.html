@@ -1,0 +1,32 @@
+@(signInForm: Form[forms.SignUpForm.Data])(implicit request: RequestHeader)
+
+@main("Geotracker Service - Sign Up") {
+  <div class="login-form" layout horizontal center-center fit>
+    @request.flash.get("error").map { msg =>
+      <div class="error">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        <strong>Error!</strong> @msg
+      </div>
+    }
+    <form action="@routes.SignUpController.signUp" method="post">
+      <paper-input-decorator floatingLabel label="First name">
+        <input is="core-input" name="firstName" value="@signInForm("firstName").value.getOrElse("")" required>
+      </paper-input-decorator>
+      <paper-input-decorator floatingLabel label="Last name">
+        <input is="core-input" name="lastName" value="@signInForm("lastName").value.getOrElse("")" required>
+      </paper-input-decorator>
+      <paper-input-decorator floatingLabel label="Email">
+        <input is="core-input" name="email" value="@signInForm("email").value.getOrElse("")" required>
+      </paper-input-decorator>
+      <paper-input-decorator floatingLabel label="Password">
+        <input is="core-input" name="password" value="@signInForm("password").value.getOrElse("")" required type="password">
+      </paper-input-decorator>
+      <div horizontal layout>
+        <div flex></div>
+        <paper-button class="colored">
+          <input type="submit" value="Sign Up">
+        </paper-button>
+      </div>
+    </form>
+  </div>
+}
