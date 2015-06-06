@@ -12,13 +12,28 @@ This service is running @ [https://wasis.nu/mit/geotracker-service](https://wasi
 
 See [Android GeoTracker](https://github.com/sne11ius/GeoTracker)
 
-## How to run
+## How to
 
-1. Install [activator](https://www.playframework.com/documentation/2.3.x/Installing)
-2. Hit `activator run`
-3. ...
-4. You want to use some DB with this
-5. Create an account to get an api key
+### Prerequisites
+
+Make sure you got these available
+
+- nodejs
+- grunt
+- bower
+- ruby & sass
+
+### Run
+
+0. Clone [https://github.com/sne11ius/play-yeoman](https://github.com/sne11ius/play-yeoman), and
+   `sbt publishLocal` the projects in `./play-yeoman` and `./sbt-yeoman`.
+1. Run `npm install`
+2. Run `bower install`
+3. Install [activator](https://www.playframework.com/documentation/2.3.x/Installing)
+4. Hit `activator run`
+5. ...
+6. You want to use some DB with this
+7. Create an account to get an api key
 
 ## Urls
 
