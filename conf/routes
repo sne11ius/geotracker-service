@@ -6,6 +6,7 @@ GET    /assets/*file                           controllers.Assets.at(path="/publ
 GET    /ui                                     com.tuplejump.playYeoman.Yeoman.index
 
 # Coords
+POST   /coordinates                            @controllers.GeoCoordController.postCoords
 POST   /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
 GET    /rest/coordinates/latest                @controllers.GeoCoordController.loadLatest
 GET    /rest/coordinates/coords                @controllers.GeoCoordController.loadCoords(begin: Option[Long], end: Option[Long])
